@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { INITIAL_CHALLENGES, INITIAL_PROPOSALS, INITIAL_NEP_CREDITS, INITIAL_CSR_PARTNERS } from '../data/mockData';
-import { MOCK_USERS } from '../components/auth/LoginModal';
+import { MOCK_USERS } from '../data/mockUsers';
 import { calculateAiSeverity } from '../utils/aiEngine';
 import { checkGeoSemanticDuplicates } from '../utils/geoDeduplication';
 import { routeChallengeToHei } from '../utils/heiRouting';
@@ -20,12 +20,20 @@ export const ROLES = {
 export const AppProvider = ({ children }) => {
   // Currently authenticated user profile
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('sih_portal_user');
-    return saved ? JSON.parse(saved) : MOCK_USERS[0];
+    try {
+      const saved = localStorage.getItem('sih_portal_user');
+      return saved ? JSON.parse(saved) : (MOCK_USERS && MOCK_USERS[0] ? MOCK_USERS[0] : null);
+    } catch {
+      return MOCK_USERS && MOCK_USERS[0] ? MOCK_USERS[0] : null;
+    }
   });
 
   const [currentRole, setCurrentRole] = useState(() => {
-    return localStorage.getItem('sih_portal_role') || 'CITIZEN';
+    try {
+      return localStorage.getItem('sih_portal_role') || 'CITIZEN';
+    } catch {
+      return 'CITIZEN';
+    }
   });
 
   const [challenges, setChallenges] = useState(() => {
