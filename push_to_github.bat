@@ -12,31 +12,30 @@ if "%REPO_URL%"=="" (
 )
 
 echo.
-echo [1/4] Checking Git repository initialization...
+echo [1/4] Checking Git repository status...
 git status >nul 2>&1
 if %errorlevel% neq 0 (
     git init
     git branch -M main
 )
 
-echo [2/4] Staging project files...
+echo [2/4] Staging files including dist folder...
 git add .
 
 echo [3/4] Creating commit...
-git commit -m "Deploy Societal Innovation Collaboration Portal frontend"
+git commit -m "Deploy portal with pre-built dist for GitHack & GitHub Pages"
 
-echo [4/4] Adding remote origin and pushing to GitHub...
+echo [4/4] Pushing to GitHub...
 git remote remove origin >nul 2>&1
 git remote add origin %REPO_URL%
 git push -u origin main --force
 
 echo.
 echo ====================================================================
-echo [SUCCESS] Code successfully pushed to GitHub!
+echo [SUCCESS] Code pushed to GitHub!
 echo.
-echo Next Steps for Live Online Access on iPad / Mobile / PC:
-echo 1. Go to your GitHub Repository settings -> Pages
-echo 2. Set Source: Deploy from a branch -> Branch: main -> / (root) or /dist
-echo 3. Or deploy to Vercel in 1 click: https://vercel.com/new
+echo INSTANT GITHACK LINK FOR IPAD / MOBILE / PC:
+echo Open this URL in any browser:
+echo https://raw.githack.com/YOUR_USERNAME/YOUR_REPO_NAME/main/dist/index.html
 echo ====================================================================
 pause
