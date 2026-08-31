@@ -41,47 +41,75 @@ export const LocalBodyView = () => {
 
       {/* Verification Modal / Drawer */}
       {selectedChallenge && (
-        <form onSubmit={handleSignOff} className="bg-white rounded-2xl p-6 border-2 border-blue-500 shadow-xl space-y-4 animate-in fade-in">
-          <div className="flex items-center justify-between border-b pb-3">
-            <h3 className="font-bold text-base text-slate-900 flex items-center space-x-2">
+        <form onSubmit={handleSignOff} className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-blue-500 shadow-2xl space-y-5 animate-in zoom-in-95 duration-200">
+          <div className="flex items-center justify-between border-b pb-4">
+            <h3 className="font-extrabold text-base text-slate-900 flex items-center space-x-2">
               <ShieldCheck className="w-5 h-5 text-blue-600" />
-              <span>Ground Truth Field Validation Checklist</span>
+              <span>Ground Truth Field Inspection & Digital Stamp Sign-off</span>
             </h3>
-            <span className="text-xs font-mono text-blue-700">{selectedChallenge.id}</span>
+            <span className="text-xs font-mono text-blue-700 font-bold bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">{selectedChallenge.id}</span>
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-xl text-xs space-y-1 text-blue-900">
-            <div className="font-bold">{selectedChallenge.title}</div>
-            <div className="text-blue-700">{selectedChallenge.address} ({selectedChallenge.district})</div>
-            <div className="text-blue-600 text-[11px] pt-1">Reported Population Impact: {selectedChallenge.populationAffected} residents</div>
+          <div className="bg-blue-50/80 p-4 rounded-2xl text-xs space-y-1.5 text-blue-950 border border-blue-100">
+            <div className="font-black text-sm">{selectedChallenge.title}</div>
+            <div className="text-blue-800 font-medium">{selectedChallenge.address} ({selectedChallenge.district})</div>
+            <div className="text-blue-900 text-[11px] pt-1 flex items-center space-x-4">
+              <span>Reported Population: <strong>{selectedChallenge.populationAffected.toLocaleString()} citizens</strong></span>
+              <span>AI Severity Score: <strong className="font-mono text-rose-700">{selectedChallenge.priorityScore}/100</strong></span>
+            </div>
+          </div>
+
+          {/* Interactive Inspection Checklist */}
+          <div className="space-y-2 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600">
+              Mandatory Ground Truth Inspection Protocol Checklist:
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-slate-700">
+              <label className="flex items-center space-x-2 bg-white p-2 rounded-xl border border-slate-200 cursor-pointer">
+                <input type="checkbox" defaultChecked className="rounded text-blue-600 focus:ring-blue-500" />
+                <span>Physical Geotag Coordinates Verified on site</span>
+              </label>
+              <label className="flex items-center space-x-2 bg-white p-2 rounded-xl border border-slate-200 cursor-pointer">
+                <input type="checkbox" defaultChecked className="rounded text-blue-600 focus:ring-blue-500" />
+                <span>Photographic & Hazard Evidence Authenticated</span>
+              </label>
+              <label className="flex items-center space-x-2 bg-white p-2 rounded-xl border border-slate-200 cursor-pointer">
+                <input type="checkbox" defaultChecked className="rounded text-blue-600 focus:ring-blue-500" />
+                <span>Panchayat Mukhiya / Ward Member In-Person Concurrence</span>
+              </label>
+              <label className="flex items-center space-x-2 bg-white p-2 rounded-xl border border-slate-200 cursor-pointer">
+                <input type="checkbox" defaultChecked className="rounded text-blue-600 focus:ring-blue-500" />
+                <span>Endorsement for HEI Research & Prototype Deployment</span>
+              </label>
+            </div>
           </div>
 
           <div className="space-y-3 text-xs">
-            <label className="block font-semibold text-slate-700">Official Inspection Remarks & Sign-off Notes *</label>
+            <label className="block font-bold text-slate-700">Official Field Inspection Remarks & Digital Sign-off Stamp *</label>
             <textarea
               required
               rows={3}
-              placeholder="e.g. Conducted physical inspection on site. Water contamination confirmed with local Sarpanch. Prototype deployment approved..."
+              placeholder="e.g. Conducted physical inspection on site. Water contamination confirmed with local Sarpanch. Prototype deployment approved and assigned to HEI..."
               value={inspectionNotes}
               onChange={e => setInspectionNotes(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              className="w-full px-4 py-3 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none font-medium"
             />
           </div>
 
-          <div className="flex justify-end space-x-3 pt-2">
+          <div className="flex justify-end space-x-3 pt-3 border-t">
             <button
               type="button"
               onClick={() => setSelectedChallenge(null)}
-              className="px-4 py-2 text-xs font-semibold text-slate-600"
+              className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-900"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center space-x-1.5"
+              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center space-x-2"
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>Sign-off & Confirm Validation</span>
+              <span>Issue Digital Sign-off Stamp & Validate</span>
             </button>
           </div>
         </form>

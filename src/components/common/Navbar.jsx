@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useApp, ROLES } from '../../context/AppContext';
 import { LoginModal } from '../auth/LoginModal';
-import { Landmark, RefreshCw, Smartphone, Tablet, Monitor, LogIn, UserCheck } from 'lucide-react';
+import { AiFormulaModal } from './AiFormulaModal';
+import { Landmark, RefreshCw, Smartphone, Tablet, Monitor, LogIn, UserCheck, Cpu, Sparkles } from 'lucide-react';
 
 export const Navbar = () => {
   const { currentUser, currentRole, resetToDefaultData } = useApp();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showAiModal, setShowAiModal] = useState(false);
   const roleConfig = ROLES[currentRole];
 
   return (
@@ -33,8 +35,18 @@ export const Navbar = () => {
               </div>
             </div>
 
-            {/* User Profile & Device Responsive Indicators */}
-            <div className="flex items-center space-x-3">
+            {/* Actions: AI Formula Inspector, User Profile & Indicators */}
+            <div className="flex items-center space-x-2.5 sm:space-x-3">
+              {/* AI Formula Engine Inspector Button */}
+              <button
+                onClick={() => setShowAiModal(true)}
+                className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/20 to-teal-500/20 hover:from-amber-500/30 hover:to-teal-500/30 border border-amber-400/50 px-3 py-2 rounded-xl text-amber-300 hover:text-amber-200 text-xs font-bold transition shadow-sm"
+                title="Open AI Severity Formula Inspector & Simulator"
+              >
+                <Cpu className="w-4 h-4 text-amber-400 animate-pulse" />
+                <span className="hidden md:inline">AI Formula Simulator</span>
+              </button>
+
               {/* Responsive Device Badges */}
               <div className="hidden xl:flex items-center space-x-1.5 text-teal-300 text-xs bg-teal-950/80 px-3 py-1.5 rounded-full border border-teal-800/60 shadow-inner">
                 <Monitor className="w-3.5 h-3.5" />
@@ -46,7 +58,7 @@ export const Navbar = () => {
               {/* Logged in User Badge & Login Modal Button */}
               <button
                 onClick={() => setShowLoginModal(true)}
-                className="flex items-center space-x-2.5 bg-teal-950/90 hover:bg-teal-900 border border-teal-700/60 p-1.5 sm:pr-3.5 rounded-2xl transition-all shadow-sm group"
+                className="flex items-center space-x-2.5 bg-teal-950/90 hover:bg-teal-900 border border-teal-700/60 p-1.5 sm:pr-3.5 rounded-2xl transition-all shadow-sm group touch-target"
               >
                 <img
                   src={currentUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'}
@@ -76,7 +88,7 @@ export const Navbar = () => {
                   }
                 }}
                 title="Reset Mock Data"
-                className="p-2.5 rounded-xl bg-teal-950/60 hover:bg-teal-900 text-teal-300 hover:text-white transition border border-teal-800/40"
+                className="p-2.5 rounded-xl bg-teal-950/60 hover:bg-teal-900 text-teal-300 hover:text-white transition border border-teal-800/40 touch-target flex items-center justify-center"
               >
                 <RefreshCw className="w-4 h-4" />
               </button>
@@ -87,6 +99,10 @@ export const Navbar = () => {
 
       {/* Login Modal */}
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+
+      {/* AI Formula Modal */}
+      <AiFormulaModal isOpen={showAiModal} onClose={() => setShowAiModal(false)} />
     </>
   );
 };
+
