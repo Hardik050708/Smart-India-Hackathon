@@ -108,7 +108,7 @@ export const CitizenView = () => {
             </div>
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight">Report & Track Grassroots Societal Problems</h2>
             <p className="text-xs sm:text-sm text-teal-100 max-w-2xl leading-relaxed">
-              Submit civic, agricultural, environmental or water issues with Leaflet GPS coordinates. Our 3-Layer AI engine screens hazards, calculates severity, deduplicates nearby reports ($\le 5\text{km}$), and routes them to top Jharkhand HEIs.
+              Submit civic, agricultural, environmental or water issues with Leaflet GPS coordinates. Our 3-Layer AI engine screens hazards, calculates severity, deduplicates nearby reports (&le; 5 km radius), and routes them to top Jharkhand HEIs.
             </p>
           </div>
 
