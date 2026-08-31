@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { INITIAL_CHALLENGES, INITIAL_PROPOSALS, INITIAL_NEP_CREDITS, INITIAL_CSR_PARTNERS } from '../data/mockData';
+import { MOCK_USERS } from '../components/auth/LoginModal';
 import { calculateAiSeverity } from '../utils/aiEngine';
 import { checkGeoSemanticDuplicates } from '../utils/geoDeduplication';
 import { routeChallengeToHei } from '../utils/heiRouting';
@@ -17,6 +18,12 @@ export const ROLES = {
 };
 
 export const AppProvider = ({ children }) => {
+  // Currently authenticated user profile
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('sih_portal_user');
+    return saved ? JSON.parse(saved) : MOCK_USERS[0];
+  });
+
   const [currentRole, setCurrentRole] = useState(() => {
     return localStorage.getItem('sih_portal_role') || 'CITIZEN';
   });
@@ -47,7 +54,11 @@ export const AppProvider = ({ children }) => {
     { id: 'f3', name: 'Dr. Rajesh Sinha', email: 'rsinha@nitjsr.ac.in', dept: 'Civil Engineering', designation: 'Asst Professor', maxCapacity: 3 }
   ]);
 
-  // Sync to LocalStorage
+  // Sync state to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('sih_portal_user', JSON.stringify(currentUser));
+  }, [currentUser]);
+
   useEffect(() => {
     localStorage.setItem('sih_portal_role', currentRole);
   }, [currentRole]);
@@ -68,13 +79,25 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('sih_portal_csr_partners', JSON.stringify(csrPartners));
   }, [csrPartners]);
 
-  // Citizen Action: Submit Challenge with AI calculation, Geo-dedup & HEI auto-routing
+  // Login handler
+  const loginUser = (userProfile) => {
+    setCurrentUser(userProfile);
+    setCurrentRole(userProfile.roleId);
+  };
+
+  const switchRole = (roleId) => {
+    setCurrentRole(roleId);
+    const matchedUser = MOCK_USERS.find(u => u.roleId === roleId);
+    if (matchedUser) {
+      setCurrentUser(matchedUser);
+    }
+  };
+
+  // Citizen Action: Submit Challenge
   const addChallenge = (newChallengeData) => {
     const duplicateCheck = checkGeoSemanticDuplicates(newChallengeData, challenges);
-
     const duplicateCount = duplicateCheck.isDuplicate ? duplicateCheck.matchedCount + 1 : 0;
 
-    // AI Engine severity score
     const aiAssessment = calculateAiSeverity({
       title: newChallengeData.title,
       description: newChallengeData.description,
@@ -83,13 +106,12 @@ export const AppProvider = ({ children }) => {
       duplicateCount
     });
 
-    // Smart HEI Routing
     const heiRouting = routeChallengeToHei(newChallengeData.category, newChallengeData.district);
 
     const createdChallenge = {
       id: `CHALLENGE-2026-${String(challenges.length + 1).padStart(3, '0')}`,
       ...newChallengeData,
-      reportedBy: newChallengeData.reportedBy || 'Grassroots Citizen',
+      reportedBy: currentUser ? `${currentUser.name} (${currentUser.title})` : 'Grassroots Citizen',
       reportedDate: new Date().toISOString().split('T')[0],
       populationAffected: parseInt(newChallengeData.populationAffected || 100),
       duplicateCount,
@@ -137,7 +159,7 @@ export const AppProvider = ({ children }) => {
           ...c,
           status: 'verified',
           verifiedByLocalBody: true,
-          localBodyNotes: notes || 'Ground truth validated by local municipal officer.'
+          localBodyNotes: notes || `Validated by ${currentUser?.name || 'Local Officer'}.`
         };
       }
       return c;
@@ -164,11 +186,10 @@ export const AppProvider = ({ children }) => {
 
     setProposals(prev => [newProp, ...prev]);
 
-    // Update target challenge status to 'proposal_submitted'
     setChallenges(prev => prev.map(c => c.id === proposalData.challengeId ? { ...c, status: 'proposal_submitted' } : c));
   };
 
-  // Industry CSR Funding Pledge
+  // CSR Funding Pledge
   const pledgeCsrFunds = (proposalId, amount, partnerName) => {
     setProposals(prev => prev.map(p => {
       if (p.id === proposalId) {
@@ -185,14 +206,13 @@ export const AppProvider = ({ children }) => {
       return p;
     }));
 
-    // Update challenge status to 'in_progress'
     const prop = proposals.find(p => p.id === proposalId);
     if (prop) {
       setChallenges(prev => prev.map(c => c.id === prop.challengeId ? { ...c, status: 'in_progress' } : c));
     }
   };
 
-  // Milestone Approval & Credit Generation
+  // Milestone Approval
   const updateMilestoneStatus = (proposalId, milestoneStage, newStatus) => {
     setProposals(prev => prev.map(p => {
       if (p.id === proposalId) {
@@ -219,8 +239,8 @@ export const AppProvider = ({ children }) => {
   const issueNepCertificate = (studentData) => {
     const cert = {
       id: `NEP-CERT-2026-${Math.floor(100 + Math.random() * 900)}`,
-      studentName: studentData.name,
-      studentRoll: studentData.roll || 'BTECH/2026/012',
+      studentName: studentData.studentName || studentData.name,
+      studentRoll: studentData.studentRoll || studentData.roll || 'BTECH/2026/012',
       institution: studentData.institution || 'BIT Mesra',
       department: studentData.department || 'Environmental Engineering',
       projectTitle: studentData.projectTitle || 'Societal Innovation Research',
@@ -238,7 +258,7 @@ export const AppProvider = ({ children }) => {
     return cert;
   };
 
-  // Faculty Bulk CSV Parser & Importer
+  // Faculty Bulk CSV Parser
   const bulkUploadFaculty = (facultyList) => {
     const formatted = facultyList.map((f, i) => ({
       id: `f_bulk_${Date.now()}_${i}`,
@@ -252,7 +272,7 @@ export const AppProvider = ({ children }) => {
     setFacultyRoster(prev => [...formatted, ...prev]);
   };
 
-  // Industry Partner Bulk CSV Importer
+  // Industry Partner Bulk CSV Parser
   const bulkUploadPartners = (partnerList) => {
     const formatted = partnerList.map((p, i) => ({
       id: `csr_bulk_${Date.now()}_${i}`,
@@ -268,20 +288,21 @@ export const AppProvider = ({ children }) => {
   };
 
   const resetToDefaultData = () => {
-    localStorage.removeItem('sih_portal_challenges');
-    localStorage.removeItem('sih_portal_proposals');
-    localStorage.removeItem('sih_portal_nep_credits');
-    localStorage.removeItem('sih_portal_csr_partners');
+    localStorage.clear();
     setChallenges(INITIAL_CHALLENGES);
     setProposals(INITIAL_PROPOSALS);
     setNepCredits(INITIAL_NEP_CREDITS);
     setCsrPartners(INITIAL_CSR_PARTNERS);
+    setCurrentUser(MOCK_USERS[0]);
+    setCurrentRole('CITIZEN');
   };
 
   return (
     <AppContext.Provider value={{
+      currentUser,
       currentRole,
-      setCurrentRole,
+      setCurrentRole: switchRole,
+      loginUser,
       challenges,
       proposals,
       nepCredits,
