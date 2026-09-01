@@ -1,18 +1,23 @@
 /**
- * Comprehensive realistic dataset for Societal Innovation Collaboration Portal
- * Covers 7 RBAC roles, 24 districts of Jharkhand, active research projects, NEP credit ledger, and CSR pledges.
+ * Comprehensive bilingual dataset for Societal Innovation Collaboration Portal
+ * Includes full English and Hindi (हिन्दी) fields for Challenges, Proposals, Projects, NEP Credits, and CSR Partners.
  */
 
 export const INITIAL_CHALLENGES = [
   {
     id: 'CHALLENGE-2026-001',
     title: 'High Arsenic & Heavy Metal Contamination in Rural Groundwater',
+    title_hi: 'ग्रामीण भूजल में खतरनाक आर्सेनिक एवं भारी धातु संदूषण',
     description: 'Groundwater samples from 14 handpumps in Angara block show dangerous levels of arsenic (0.08 mg/L) and iron, causing chronic waterborne illnesses among 4,500 villagers.',
+    description_hi: 'अनगड़ा प्रखंड के 14 चापाकलों के भूजल नमूनों में आर्सेनिक (0.08 mg/L) और लोहे की अत्यधिक मात्रा पाई गई है, जिससे 4,500 ग्रामीणों में जलजनित गंभीर बीमारियां फैल रही हैं।',
     category: 'Water Quality',
+    category_hi: 'जल गुणवत्ता',
     district: 'Ranchi',
+    district_hi: 'रांची',
     lat: 23.3850,
     lng: 85.4510,
     address: 'Village Getalsud, Angara Block, Ranchi District',
+    address_hi: 'ग्राम गेतलसूद, अनगड़ा प्रखंड, रांची जिला',
     reportedBy: 'Birsa Munda (Citizen)',
     reportedDate: '2026-08-15',
     populationAffected: 4500,
@@ -27,20 +32,28 @@ export const INITIAL_CHALLENGES = [
     status: 'in_progress',
     verifiedByLocalBody: true,
     localBodyNotes: 'Field inspection completed. Verified arsenic discoloration and health symptoms. Assigned to BIT Mesra Environmental Engineering.',
+    localBodyNotes_hi: 'क्षेत्रीय निरीक्षण पूर्ण हुआ। आर्सेनिक संदूषण एवं स्वास्थ्य प्रभावों की पुष्टि की गई। बीआईटी मेसरा पर्यावरण इंजीनियरिंग विभाग को सौंपा गया।',
     routedHei: 'Birla Institute of Technology (BIT) Mesra',
+    routedHei_hi: 'बिड़ला प्रौद्योगिकी संस्थान (बीआईटी) मेसरा',
     routedDept: 'Environmental Engineering',
+    routedDept_hi: 'पर्यावरण इंजीनियरिंग विभाग',
     upvotes: 142,
     upvotedByUser: false
   },
   {
     id: 'CHALLENGE-2026-002',
     title: 'Coal Mine Tailings Runoff Poisoning Damodar River Tributary',
+    title_hi: 'कोयला खदान अपशिष्ट से दामोदर नदी की सहायक धारा का संदूषण',
     description: 'Industrial runoff and heavy sediment from open-cast mines in Jharia coalfield flowing directly into local drinking water stream affecting 8,000 residents.',
+    description_hi: 'झरिया कोयला क्षेत्र की खुली खदानों से निकलने वाला औद्योगिक अपशिष्ट और भारी तलछट सीधे स्थानीय पेयजल स्रोत में मिल रहा है, जिससे 8,000 नागरिक प्रभावित हैं।',
     category: 'Mining & Environment Safety',
+    category_hi: 'खनन एवं पर्यावरण सुरक्षा',
     district: 'Dhanbad',
+    district_hi: 'धनबाद',
     lat: 23.7500,
     lng: 86.4100,
     address: 'Jharia Coal Belt, Zone 4, Dhanbad District',
+    address_hi: 'झरिया कोल बेल्ट, जोन 4, धनबाद जिला',
     reportedBy: 'Sunita Devi (Citizen)',
     reportedDate: '2026-08-18',
     populationAffected: 8000,
@@ -55,20 +68,28 @@ export const INITIAL_CHALLENGES = [
     status: 'in_progress',
     verifiedByLocalBody: true,
     localBodyNotes: 'Local Mukhiya confirmed stream toxicity. Heavy metal filtration prototype currently undergoing Stage 2 testing.',
+    localBodyNotes_hi: 'स्थानीय मुखिया द्वारा जल विषाक्तता की पुष्टि। भारी धातु निस्पंदन प्रोटोटाइप का द्वितीय चरण परीक्षण जारी है।',
     routedHei: 'Indian Institute of Technology (IIT ISM) Dhanbad',
+    routedHei_hi: 'भारतीय प्रौद्योगिकी संस्थान (आईआईटी आईएसएम) धनबाद',
     routedDept: 'Environmental Science & Engineering',
+    routedDept_hi: 'पर्यावरण विज्ञान एवं इंजीनियरिंग विभाग',
     upvotes: 210,
     upvotedByUser: true
   },
   {
     id: 'CHALLENGE-2026-003',
     title: 'Severe Crop Pest Infestation Destroying Kharif Crops in Potka',
+    title_hi: 'पोटका में खरीफ धान की फसलों को नष्ट करता गंभीर कीट प्रकोप',
     description: 'Brown planthopper infestation destroying over 350 hectares of paddy fields. Farmers lack low-cost organic bio-pesticide sprayers and early warning IoT monitoring.',
+    description_hi: 'भूरा माहू कीट के प्रकोप से 350 हेक्टेयर से अधिक धान की फसल नष्ट हो रही है। किसानों के पास कम लागत वाले जैविक कीटनाशक छिड़काव उपकरण और IoT निगरानी प्रणाली का अभाव है।',
     category: 'Agro-Tech',
+    category_hi: 'कृषि-तकनीक (एग्रो-टेक)',
     district: 'East Singhbhum',
+    district_hi: 'पूर्वी सिंहभूम',
     lat: 22.6200,
     lng: 86.2200,
     address: 'Potka Panchayat, East Singhbhum District',
+    address_hi: 'पोटका पंचायत, पूर्वी सिंहभूम जिला',
     reportedBy: 'Birsa Munda (Farmer / Citizen)',
     reportedDate: '2026-08-20',
     populationAffected: 1200,
@@ -83,20 +104,28 @@ export const INITIAL_CHALLENGES = [
     status: 'proposal_submitted',
     verifiedByLocalBody: true,
     localBodyNotes: 'Agri-extension officer verified crop damage. Proposal submitted by BAU Kanke team for solar-powered IoT pest trap.',
+    localBodyNotes_hi: 'कृषि विस्तार अधिकारी ने क्षति की पुष्टि की। बीएयू कांके की टीम ने सौर-ऊर्जा संचालित IoT कीट जाल हेतु प्रस्ताव प्रस्तुत किया है।',
     routedHei: 'Birsa Agricultural University (BAU) Kanke',
+    routedHei_hi: 'बिरसा कृषि विश्वविद्यालय (बीएयू) कांके',
     routedDept: 'Agronomy & Agri-Engineering',
+    routedDept_hi: 'सस्य विज्ञान एवं कृषि इंजीनियरिंग विभाग',
     upvotes: 88,
     upvotedByUser: false
   },
   {
     id: 'CHALLENGE-2026-004',
     title: 'Lack of Solar Cold Chain Storage for High-Altitude Tribal Forest Produce',
+    title_hi: 'नेतरहाट पठार पर जनजातीय वनोपज हेतु सौर शीत भंडारण की कमी',
     description: 'Tribal collectors in Netarhat plateau losing 40% of harvested Mahua flowers and medicinal herbs due to lack of off-grid solar cold storage units.',
+    description_hi: 'नेतरहाट पठार के आदिवासी संग्राहक सौर ऊर्जा आधारित शीत गृह के अभाव में महुआ फूल और दुर्लभ जड़ी-बूटियों का 40% हिस्सा खराब होने से नुकसान उठा रहे हैं।',
     category: 'Renewable Energy',
+    category_hi: 'नवीकरणीय ऊर्जा',
     district: 'Latehar',
+    district_hi: 'लातेहार',
     lat: 23.6800,
     lng: 84.2700,
     address: 'Netarhat Tribal Belt, Latehar District',
+    address_hi: 'नेतरहाट जनजातीय क्षेत्र, लातेहार जिला',
     reportedBy: 'Soma Oraon (Citizen)',
     reportedDate: '2026-08-22',
     populationAffected: 950,
@@ -111,20 +140,28 @@ export const INITIAL_CHALLENGES = [
     status: 'verified',
     verifiedByLocalBody: true,
     localBodyNotes: 'Local panchayat signoff complete. Awaiting faculty lead team assignment.',
+    localBodyNotes_hi: 'ग्राम पंचायत सत्यापन पूर्ण। एनआईटी जमशेदपुर मैकेनिकल इंजीनियरिंग टीम का कार्यभार लंबित।',
     routedHei: 'National Institute of Technology (NIT) Jamshedpur',
+    routedHei_hi: 'राष्ट्रीय प्रौद्योगिकी संस्थान (एनआईटी) जमशेदपुर',
     routedDept: 'Mechanical Engineering',
+    routedDept_hi: 'मैकेनिकल इंजीनियरिंग विभाग',
     upvotes: 64,
     upvotedByUser: false
   },
   {
     id: 'CHALLENGE-2026-005',
     title: 'Deoghar Temple Pilgrim Floral & Organic Waste to Bio-CNG Conversion',
+    title_hi: 'देवघर मंदिर के पुष्प एवं जैविक कचरे से बायो-सीएनजी उत्पादन',
     description: 'Over 8 tonnes of daily floral offerings and organic kitchen waste accumulating around Baba Baidyanath Dham shrine, creating severe sanitation risks and leachate.',
+    description_hi: 'बाबा बैद्यनाथ धाम परिसर के आसपास प्रतिदिन 8 टन से अधिक फूल और जैविक कचरा जमा होता है, जिससे स्वच्छता संबंधी गंभीर खतरे और लीचेट उत्पन्न हो रहा है।',
     category: 'Healthcare & Sanitation',
+    category_hi: 'स्वास्थ्य एवं स्वच्छता',
     district: 'Deoghar',
+    district_hi: 'देवघर',
     lat: 24.4826,
     lng: 86.7012,
     address: 'Baidyanath Dham Corridor, Deoghar',
+    address_hi: 'बैद्यनाथ धाम कॉरिडोर, देवघर',
     reportedBy: 'Manoj Pandey (Citizen)',
     reportedDate: '2026-08-24',
     populationAffected: 15000,
@@ -139,20 +176,28 @@ export const INITIAL_CHALLENGES = [
     status: 'proposal_submitted',
     verifiedByLocalBody: true,
     localBodyNotes: 'Municipal Corporation cleared pilot proposal for high-rate biomethanation plant.',
+    localBodyNotes_hi: 'नगर निगम ने उच्च-दर बायोमिथेनेशन संयंत्र के पायलट प्रस्ताव को मंजूरी दी है।',
     routedHei: 'Birla Institute of Technology (BIT) Mesra',
+    routedHei_hi: 'बिड़ला प्रौद्योगिकी संस्थान (बीआईटी) मेसरा',
     routedDept: 'Environmental Engineering',
+    routedDept_hi: 'पर्यावरण इंजीनियरिंग विभाग',
     upvotes: 119,
     upvotedByUser: false
   },
   {
     id: 'CHALLENGE-2026-006',
     title: 'Severe Fluoride Poisoning in Palamu Drought Uplands Groundwater',
+    title_hi: 'पलामू के सूखाग्रस्त क्षेत्रों में भूजल में गंभीर फ्लोराइड संदूषण',
     description: 'Fluoride concentration of 4.2 mg/L in deep borewells causing skeletal fluorosis and dental deformities across 6 remote tribal villages.',
+    description_hi: 'गहरे नलकूपों में 4.2 mg/L फ्लोराइड की सांद्रता के कारण 6 दूरदराज के आदिवासी गांवों में फ्लोरोसिस और हड्डियों की विकृति की गंभीर समस्या उत्पन्न हो रही है।',
     category: 'Water Quality',
+    category_hi: 'जल गुणवत्ता',
     district: 'Palamu',
+    district_hi: 'पलामू',
     lat: 24.0416,
     lng: 84.0722,
     address: 'Daltonganj Rural Cluster, Palamu District',
+    address_hi: 'डाल्टनगंज ग्रामीण क्लस्टर, पलामू जिला',
     reportedBy: 'Rajiv Toppo (Citizen)',
     reportedDate: '2026-08-25',
     populationAffected: 3200,
@@ -161,26 +206,34 @@ export const INITIAL_CHALLENGES = [
     urgencyScore: 90,
     populationScore: 80,
     duplicateScore: 50,
-    priorityScore: 85, // EMERGENCY ALERT
+    priorityScore: 85,
     isEmergency: true,
     urgencyTier: 'Critical',
     status: 'routed',
     verifiedByLocalBody: true,
     localBodyNotes: 'Public Health Engineering Dept verified water samples. Immediate defluoridation units required.',
+    localBodyNotes_hi: 'पेयजल एवं स्वच्छता विभाग द्वारा नमूनों की पुष्टि। तत्काल डी-फ्लोराइडेशन इकाइयों की आवश्यकता है।',
     routedHei: 'BIT Mesra / AIIMS Deoghar',
+    routedHei_hi: 'बीआईटी मेसरा / एम्स देवघर',
     routedDept: 'Department of Chemical & Environmental Engg',
+    routedDept_hi: 'रासायनिक एवं पर्यावरण इंजीनियरिंग विभाग',
     upvotes: 176,
     upvotedByUser: false
   },
   {
     id: 'CHALLENGE-2026-007',
     title: 'Smart Solar Kiln for High-Quality Lac & Bamboo Craft Curing in Khunti',
+    title_hi: 'खूंटी में लाह एवं बांस शिल्प शोधन हेतु स्मार्ट सोलर किल्न',
     description: 'Tribal artisans in Khunti facing 35% damage in raw lacquer processing and bamboo seasoning due to unpredictable monsoons and primitive open-fire drying.',
+    description_hi: 'खूंटी के जनजातीय कारीगरों को अप्रत्याशित मानसून और पारंपरिक आग से सुखाने की विधि के कारण लाह प्रसंस्करण और बांस सीजनिंग में 35% तक का नुकसान हो रहा है।',
     category: 'Agro-Tech',
+    category_hi: 'कृषि-तकनीक (एग्रो-टेक)',
     district: 'Khunti',
+    district_hi: 'खूंटी',
     lat: 23.0700,
     lng: 85.2800,
     address: 'Torpa Block, Khunti District',
+    address_hi: 'तोरपा प्रखंड, खूंटी जिला',
     reportedBy: 'Mangra Munda (Artisan)',
     reportedDate: '2026-08-27',
     populationAffected: 850,
@@ -195,8 +248,11 @@ export const INITIAL_CHALLENGES = [
     status: 'verified',
     verifiedByLocalBody: true,
     localBodyNotes: 'District Industry Centre recommended solar hybrid dehydration unit.',
+    localBodyNotes_hi: 'जिला उद्योग केंद्र द्वारा सौर हाइब्रिड डिहाइड्रेशन इकाई स्थापित करने की अनुशंसा की गई।',
     routedHei: 'Birsa Agricultural University (BAU) Kanke',
+    routedHei_hi: 'बिरसा कृषि विश्वविद्यालय (बीएयू) कांके',
     routedDept: 'Forestry & Agricultural Engineering',
+    routedDept_hi: 'वानिकी एवं कृषि इंजीनियरिंग विभाग',
     upvotes: 52,
     upvotedByUser: false
   }
@@ -207,76 +263,94 @@ export const INITIAL_PROPOSALS = [
     id: 'PROP-2026-101',
     challengeId: 'CHALLENGE-2026-001',
     challengeTitle: 'High Arsenic & Heavy Metal Contamination in Rural Groundwater',
+    challengeTitle_hi: 'ग्रामीण भूजल में खतरनाक आर्सेनिक एवं भारी धातु संदूषण',
     heiName: 'BIT Mesra',
+    heiName_hi: 'बीआईटी मेसरा',
     facultyLead: 'Dr. Alok Kumar (Professor, Environmental Engg)',
+    facultyLead_hi: 'डॉ. आलोक कुमार (प्रोफेसर, पर्यावरण इंजीनियरिंग)',
     facultyEmail: 'alok.kumar@bitmesra.ac.in',
     studentTeam: [
-      { name: 'Ananya Roy', roll: 'BTECH/ENV/2026/012', role: 'Lead Student Researcher' },
-      { name: 'Rahul Verma', roll: 'BTECH/10088/22', role: 'Hardware & Sensor Design' },
-      { name: 'Amit Das', roll: 'BTECH/10105/23', role: 'Field Deployment' }
+      { name: 'Ananya Roy', roll: 'BTECH/ENV/2026/012', role: 'Lead Student Researcher', role_hi: 'प्रधान छात्र शोधकर्ता' },
+      { name: 'Rahul Verma', roll: 'BTECH/10088/22', role: 'Hardware & Sensor Design', role_hi: 'हार्डवेयर एवं सेंसर डिजाइन' },
+      { name: 'Amit Das', roll: 'BTECH/10105/23', role: 'Field Deployment', role_hi: 'क्षेत्रीय स्थापना' }
     ],
     title: 'Low-Cost Graphene-Oxide Bio-Char Filter with Real-Time IoT Water Quality Node',
+    title_hi: 'कम लागत वाला ग्राफीन-ऑक्साइड बायो-चार फिल्टर एवं रियल-टाइम IoT जल गुणवत्ता नोड',
     abstract: 'A modular, low-energy water purification column utilizing locally sourced agricultural waste bio-char combined with graphene oxide sheets. Achieves 99.4% arsenic removal at under Rs. 0.08 per liter.',
+    abstract_hi: 'स्थानीय कृषि अपशिष्ट बायो-चार और ग्राफीन ऑक्साइड शीट का उपयोग करके एक मॉड्यूलर, कम ऊर्जा वाला जल शोधन उपकरण। 8 पैसे प्रति लीटर से भी कम लागत में 99.4% आर्सेनिक निष्कासन प्राप्त करता है।',
     requestedBudget: 240000,
     pledgedAmount: 240000,
     fundingStatus: 'fully_funded',
     csrPartner: 'Tata Steel Foundation (CSR)',
+    csrPartner_hi: 'टाटा स्टील फाउंडेशन (सीएसआर)',
     currentStage: 3,
     milestones: [
-      { stage: 1, name: 'Problem Definition & Lab Simulation', status: 'approved', creditsLogged: 60, verifiedByFaculty: true },
-      { stage: 2, name: 'Prototype Engineering & Multi-Stage Filtration Unit', status: 'approved', creditsLogged: 90, verifiedByFaculty: true },
-      { stage: 3, name: 'Field Testing & Ground Deployment in Getalsud Village', status: 'in_review', creditsLogged: 75, verifiedByFaculty: false },
-      { stage: 4, name: 'Community Operational Transfer & Public Handover', status: 'pending', creditsLogged: 0, verifiedByFaculty: false }
+      { stage: 1, name: 'Problem Definition & Lab Simulation', name_hi: 'समस्या परिभाषा एवं प्रयोगशाला सिमुलेशन', status: 'approved', creditsLogged: 60, verifiedByFaculty: true },
+      { stage: 2, name: 'Prototype Engineering & Multi-Stage Filtration Unit', name_hi: 'प्रोटोटाइप निर्माण एवं बहु-स्तरीय निस्पंदन इकाई', status: 'approved', creditsLogged: 90, verifiedByFaculty: true },
+      { stage: 3, name: 'Field Testing & Ground Deployment in Getalsud Village', name_hi: 'गेतलसूद गांव में फील्ड टेस्टिंग एवं जमीनी तैनाती', status: 'in_review', creditsLogged: 75, verifiedByFaculty: false },
+      { stage: 4, name: 'Community Operational Transfer & Public Handover', name_hi: 'सामुदायिक हस्तांतरण एवं जन उपयोग हेतु लोकार्पण', status: 'pending', creditsLogged: 0, verifiedByFaculty: false }
     ]
   },
   {
     id: 'PROP-2026-102',
     challengeId: 'CHALLENGE-2026-002',
     challengeTitle: 'Coal Mine Tailings Runoff Poisoning Damodar River Tributary',
+    challengeTitle_hi: 'कोयला खदान अपशिष्ट से दामोदर नदी की सहायक धारा का संदूषण',
     heiName: 'IIT ISM Dhanbad',
+    heiName_hi: 'आईआईटी आईएसएम धनबाद',
     facultyLead: 'Dr. Meenakshi Sundaram (HOD, Mining & Env)',
+    facultyLead_hi: 'डॉ. मीनाक्षी सुंदरम (विभागाध्यक्ष, खनन एवं पर्यावरण)',
     facultyEmail: 'meenakshi@iitism.ac.in',
     studentTeam: [
-      { name: 'Siddharth Roy', roll: '21JE0892', role: 'Hydrogeologist' },
-      { name: 'Ananya Singh', roll: '21JE0412', role: 'Environmental Chemistry' }
+      { name: 'Siddharth Roy', roll: '21JE0892', role: 'Hydrogeologist', role_hi: 'हाइड्रोजियोलॉजिस्ट' },
+      { name: 'Ananya Singh', roll: '21JE0412', role: 'Environmental Chemistry', role_hi: 'पर्यावरण रसायन' }
     ],
     title: 'Floating Bio-Retention Wetlands & Micro-Algae Acid Neutralization Barrier',
+    title_hi: 'फ्लोटिंग बायो-रिटेंशन आर्द्रभूमि एवं माइक्रो-शैवाल एसिड न्यूट्रलाइजेशन बैरियर',
     abstract: 'Deploying engineered floating wetland beds constructed with phytoremediating local plant species and alkaline slag barriers to neutralize acid mine drainage in Damodar tributaries.',
+    abstract_hi: 'दामोदर की सहायक नदियों में खदानों के अम्लीय जल को बेअसर करने हेतु स्थानीय पौधों की प्रजातियों और क्षारीय स्लैग बैरियर से निर्मित तैरते आर्द्रभूमि बेड की स्थापना।',
     requestedBudget: 450000,
     pledgedAmount: 300000,
     fundingStatus: 'partially_funded',
     csrPartner: 'Coal India Limited (CIL CSR)',
+    csrPartner_hi: 'कोल इंडिया लिमिटेड (सीआईएल सीएसआर)',
     currentStage: 2,
     milestones: [
-      { stage: 1, name: 'Water Chemistry Profiling & Species Selection', status: 'approved', creditsLogged: 80, verifiedByFaculty: true },
-      { stage: 2, name: 'Floating Wetland Grid Construction & Micro-Algae Inoculation', status: 'approved', creditsLogged: 100, verifiedByFaculty: true },
-      { stage: 3, name: 'Field Stream Pilot Deployment & Water Testing', status: 'pending', creditsLogged: 0, verifiedByFaculty: false },
-      { stage: 4, name: 'District Administration Handover & Maintenance Manual', status: 'pending', creditsLogged: 0, verifiedByFaculty: false }
+      { stage: 1, name: 'Water Chemistry Profiling & Species Selection', name_hi: 'जल रसायन प्रोफाइलिंग एवं प्रजाति चयन', status: 'approved', creditsLogged: 80, verifiedByFaculty: true },
+      { stage: 2, name: 'Floating Wetland Grid Construction & Micro-Algae Inoculation', name_hi: 'फ्लोटिंग वेटलैंड ग्रिड निर्माण एवं शैवाल रोपण', status: 'approved', creditsLogged: 100, verifiedByFaculty: true },
+      { stage: 3, name: 'Field Stream Pilot Deployment & Water Testing', name_hi: 'जलधारा पायलट तैनाती एवं जल गुणवत्ता परीक्षण', status: 'pending', creditsLogged: 0, verifiedByFaculty: false },
+      { stage: 4, name: 'District Administration Handover & Maintenance Manual', name_hi: 'जिला प्रशासन को हस्तांतरण एवं रखरखाव नियमावली', status: 'pending', creditsLogged: 0, verifiedByFaculty: false }
     ]
   },
   {
     id: 'PROP-2026-103',
     challengeId: 'CHALLENGE-2026-005',
     challengeTitle: 'Deoghar Temple Pilgrim Floral & Organic Waste to Bio-CNG Conversion',
+    challengeTitle_hi: 'देवघर मंदिर के पुष्प एवं जैविक कचरे से बायो-सीएनजी उत्पादन',
     heiName: 'BIT Mesra',
+    heiName_hi: 'बीआईटी मेसरा',
     facultyLead: 'Dr. Rajesh Sinha (Assoc Prof, Civil & Env)',
+    facultyLead_hi: 'डॉ. राजेश सिन्हा (सह-प्राध्यापक, सिविल एवं पर्यावरण)',
     facultyEmail: 'rsinha@bitmesra.ac.in',
     studentTeam: [
-      { name: 'Deepak Soren', roll: 'BTECH/CIV/2026/033', role: 'Biogas Plant Layout' },
-      { name: 'Neha Kumari', roll: 'BTECH/BIO/2026/019', role: 'Microbial Digestor Tech' }
+      { name: 'Deepak Soren', roll: 'BTECH/CIV/2026/033', role: 'Biogas Plant Layout', role_hi: 'बायोगैस प्लांट लेआउट' },
+      { name: 'Neha Kumari', roll: 'BTECH/BIO/2026/019', role: 'Microbial Digestor Tech', role_hi: 'माइक्रोबियल डाइजेस्टर तकनीक' }
     ],
     title: 'Anaerobic High-Rate Thermophilic Biogas Digester for Pilgrimage Waste',
+    title_hi: 'तीर्थ स्थल कचरे हेतु उच्च-दर थर्मोफिलिक बायोगैस डाइजेस्टर',
     abstract: 'Pre-treatment and thermophilic anaerobic digestion unit converting 5 tonnes/day temple flowers into clean cooking gas and rich organic fertilizer for nearby orchards.',
+    abstract_hi: '5 टन/दिन मंदिर के फूलों को स्वच्छ रसोई गैस और जैविक उर्वरक में परिवर्तित करने वाली एनारोबिक थर्मोफिलिक डाइजेशन प्रणाली।',
     requestedBudget: 380000,
     pledgedAmount: 380000,
     fundingStatus: 'fully_funded',
     csrPartner: 'NTPC Foundation (CSR)',
+    csrPartner_hi: 'एनटीपीसी फाउंडेशन (सीएसआर)',
     currentStage: 2,
     milestones: [
-      { stage: 1, name: 'Waste Characterization & Digestion Lab Benchmarking', status: 'approved', creditsLogged: 45, verifiedByFaculty: true },
-      { stage: 2, name: 'Continuous Stirred Tank Reactor (CSTR) Pilot Fabrication', status: 'in_review', creditsLogged: 60, verifiedByFaculty: false },
-      { stage: 3, name: 'Deoghar Shrine Ground Pilot Commissioning', status: 'pending', creditsLogged: 0, verifiedByFaculty: false },
-      { stage: 4, name: 'Municipal Handover & Training', status: 'pending', creditsLogged: 0, verifiedByFaculty: false }
+      { stage: 1, name: 'Waste Characterization & Digestion Lab Benchmarking', name_hi: 'कचरा वर्गीकरण एवं लैब बेंचमार्किंग', status: 'approved', creditsLogged: 45, verifiedByFaculty: true },
+      { stage: 2, name: 'Continuous Stirred Tank Reactor (CSTR) Pilot Fabrication', name_hi: 'रिएक्टर (CSTR) पायलट निर्माण', status: 'in_review', creditsLogged: 60, verifiedByFaculty: false },
+      { stage: 3, name: 'Deoghar Shrine Ground Pilot Commissioning', name_hi: 'देवघर धाम में पायलट प्लांट की शुरुआत', status: 'pending', creditsLogged: 0, verifiedByFaculty: false },
+      { stage: 4, name: 'Municipal Handover & Training', name_hi: 'नगर निगम को हस्तांतरण एवं प्रशिक्षण', status: 'pending', creditsLogged: 0, verifiedByFaculty: false }
     ]
   }
 ];
@@ -285,14 +359,20 @@ export const INITIAL_NEP_CREDITS = [
   {
     id: 'NEP-CERT-2026-881',
     studentName: 'Ananya Roy',
+    studentName_hi: 'अनन्या रॉय',
     studentRoll: 'BTECH/ENV/2026/012',
     institution: 'Birla Institute of Technology (BIT) Mesra',
+    institution_hi: 'बिड़ला प्रौद्योगिकी संस्थान (बीआईटी) मेसरा, रांची',
     department: 'Department of Environmental Engineering',
+    department_hi: 'पर्यावरण इंजीनियरिंग विभाग',
     projectTitle: 'Low-Cost Graphene-Oxide Bio-Char Filter with Real-Time IoT Water Quality Node',
+    projectTitle_hi: 'कम लागत वाला ग्राफीन-ऑक्साइड बायो-चार फिल्टर एवं रियल-टाइम IoT जल गुणवत्ता नोड',
     academicYear: '2025-2026 (Semester VI)',
+    academicYear_hi: '2025-2026 (सत्र VI)',
     verifiedCreditsHours: 150,
     academicCreditsEquivalent: 5.0,
     facultySupervisor: 'Dr. Alok Kumar',
+    facultySupervisor_hi: 'डॉ. आलोक कुमार (प्रोफेसर)',
     status: 'ISSUED',
     verificationHash: '0x8f7a2b91c4d3e5f6a7b8c9d0e1f2a3b4c5d6e7f8',
     issueDate: '2026-08-28',
@@ -301,14 +381,20 @@ export const INITIAL_NEP_CREDITS = [
   {
     id: 'NEP-CERT-2026-882',
     studentName: 'Siddharth Roy',
+    studentName_hi: 'सिद्धार्थ रॉय',
     studentRoll: '21JE0892',
     institution: 'Indian Institute of Technology (IIT ISM) Dhanbad',
+    institution_hi: 'भारतीय प्रौद्योगिकी संस्थान (आईआईटी आईएसएम) धनबाद',
     department: 'Department of Environmental Science & Engineering',
+    department_hi: 'पर्यावरण विज्ञान एवं इंजीनियरिंग विभाग',
     projectTitle: 'Floating Bio-Retention Wetlands & Micro-Algae Acid Neutralization Barrier',
+    projectTitle_hi: 'फ्लोटिंग बायो-रिटेंशन आर्द्रभूमि एवं माइक्रो-शैवाल एसिड न्यूट्रलाइजेशन बैरियर',
     academicYear: '2025-2026 (Semester VII)',
+    academicYear_hi: '2025-2026 (सत्र VII)',
     verifiedCreditsHours: 180,
     academicCreditsEquivalent: 6.0,
     facultySupervisor: 'Dr. Meenakshi Sundaram',
+    facultySupervisor_hi: 'डॉ. मीनाक्षी सुंदरम (विभागाध्यक्ष)',
     status: 'ISSUED',
     verificationHash: '0x3c2b1a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b',
     issueDate: '2026-08-29',
@@ -320,8 +406,10 @@ export const INITIAL_CSR_PARTNERS = [
   {
     id: 'CSR-01',
     orgName: 'Tata Steel Foundation',
+    orgName_hi: 'टाटा स्टील फाउंडेशन',
     cinNumber: 'U85300JH2016NPL008912',
     thematicFocus: 'Water Sanitation, Rural Health, Tribal Livelihoods',
+    thematicFocus_hi: 'जल स्वच्छता, ग्रामीण स्वास्थ्य, जनजातीय आजीविका',
     annualBudget: 15000000,
     pledgedTotal: 4800000,
     contactEmail: 'csr@tatasteelfoundation.org'
@@ -329,8 +417,10 @@ export const INITIAL_CSR_PARTNERS = [
   {
     id: 'CSR-02',
     orgName: 'Coal India Limited (CIL CSR)',
+    orgName_hi: 'कोल इंडिया लिमिटेड (सीआईएल सीएसआर)',
     cinNumber: 'L10101WB1973GOI028844',
     thematicFocus: 'Mine Reclamation, Environmental Safety, Bio-remediation',
+    thematicFocus_hi: 'खदान सुधार, पर्यावरण सुरक्षा, बायो-रेमेडिएशन',
     annualBudget: 25000000,
     pledgedTotal: 9200000,
     contactEmail: 'community.cil@coalindia.in'
@@ -338,10 +428,65 @@ export const INITIAL_CSR_PARTNERS = [
   {
     id: 'CSR-03',
     orgName: 'NTPC Foundation',
+    orgName_hi: 'एनटीपीसी फाउंडेशन',
     cinNumber: 'L40101DL1975GOI007966',
     thematicFocus: 'Rural Electrification, Solar Microgrids, Agro-Tech',
+    thematicFocus_hi: 'ग्रामीण विद्युतीकरण, सौर माइक्रोग्रिड, कृषि-तकनीक',
     annualBudget: 12000000,
     pledgedTotal: 3500000,
     contactEmail: 'csr@ntpc.co.in'
   }
 ];
+
+// Localized helper functions for components
+export const getLocalizedChallenge = (c, lang = 'en') => {
+  if (lang !== 'hi') return c;
+  return {
+    ...c,
+    title: c.title_hi || c.title,
+    description: c.description_hi || c.description,
+    category: c.category_hi || c.category,
+    district: c.district_hi || c.district,
+    address: c.address_hi || c.address,
+    localBodyNotes: c.localBodyNotes_hi || c.localBodyNotes,
+    routedHei: c.routedHei_hi || c.routedHei,
+    routedDept: c.routedDept_hi || c.routedDept
+  };
+};
+
+export const getLocalizedProposal = (p, lang = 'en') => {
+  if (lang !== 'hi') return p;
+  return {
+    ...p,
+    title: p.title_hi || p.title,
+    abstract: p.abstract_hi || p.abstract,
+    challengeTitle: p.challengeTitle_hi || p.challengeTitle,
+    heiName: p.heiName_hi || p.heiName,
+    facultyLead: p.facultyLead_hi || p.facultyLead,
+    csrPartner: p.csrPartner_hi || p.csrPartner,
+    studentTeam: (p.studentTeam || []).map(st => ({ ...st, role: st.role_hi || st.role })),
+    milestones: (p.milestones || []).map(m => ({ ...m, name: m.name_hi || m.name }))
+  };
+};
+
+export const getLocalizedCredit = (cr, lang = 'en') => {
+  if (lang !== 'hi') return cr;
+  return {
+    ...cr,
+    studentName: cr.studentName_hi || cr.studentName,
+    institution: cr.institution_hi || cr.institution,
+    department: cr.department_hi || cr.department,
+    projectTitle: cr.projectTitle_hi || cr.projectTitle,
+    academicYear: cr.academicYear_hi || cr.academicYear,
+    facultySupervisor: cr.facultySupervisor_hi || cr.facultySupervisor
+  };
+};
+
+export const getLocalizedPartner = (part, lang = 'en') => {
+  if (lang !== 'hi') return part;
+  return {
+    ...part,
+    orgName: part.orgName_hi || part.orgName,
+    thematicFocus: part.thematicFocus_hi || part.thematicFocus
+  };
+};

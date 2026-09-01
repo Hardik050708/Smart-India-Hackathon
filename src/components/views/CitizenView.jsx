@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { LeafletMap } from '../common/LeafletMap';
 import { JHARKHAND_DISTRICTS } from '../../data/jharkhandDistricts';
 import { calculateAiSeverity } from '../../utils/aiEngine';
+import { getLocalizedChallenge } from '../../data/mockData';
 import {
   AlertTriangle, MapPin, ThumbsUp, PlusCircle, Sparkles, CheckCircle2,
   ShieldAlert, Search, Filter, Clock, CheckCircle, ArrowRight, ArrowLeft,
@@ -10,7 +11,7 @@ import {
 } from 'lucide-react';
 
 export const CitizenView = () => {
-  const { challenges, addChallenge, upvoteChallenge, currentUser, t, globalSearch } = useApp();
+  const { challenges, addChallenge, upvoteChallenge, currentUser, t, globalSearch, language } = useApp();
 
   const [activeTab, setActiveTab] = useState('all'); // 'all' | 'my_submissions'
   const [searchQuery, setSearchQuery] = useState('');
@@ -111,19 +112,22 @@ export const CitizenView = () => {
   // Combined search (local input + global search in navbar)
   const activeSearch = (globalSearch || searchQuery).toLowerCase();
 
+  // Localize all challenges according to active language
+  const localizedChallenges = challenges.map(c => getLocalizedChallenge(c, language));
+
   // Filter challenges
-  const filteredChallenges = challenges.filter(c => {
+  const filteredChallenges = localizedChallenges.filter(c => {
     const matchesSearch = !activeSearch ||
                           c.title.toLowerCase().includes(activeSearch) ||
                           c.description.toLowerCase().includes(activeSearch) ||
                           c.district.toLowerCase().includes(activeSearch) ||
                           c.category.toLowerCase().includes(activeSearch);
-    const matchesCat = selectedCategory === 'ALL' || c.category === selectedCategory;
+    const matchesCat = selectedCategory === 'ALL' || c.category === selectedCategory || c.category_hi === selectedCategory;
     const matchesTab = activeTab === 'all' || (c.reportedBy && c.reportedBy.includes(currentUser?.name || 'Citizen'));
     return matchesSearch && matchesCat && matchesTab;
   });
 
-  const mySubmissionsCount = challenges.filter(c => c.reportedBy && c.reportedBy.includes(currentUser?.name || 'Citizen')).length;
+  const mySubmissionsCount = localizedChallenges.filter(c => c.reportedBy && c.reportedBy.includes(currentUser?.name || 'Citizen')).length;
 
   return (
     <div className="space-y-6">
