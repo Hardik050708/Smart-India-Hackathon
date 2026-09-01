@@ -10,6 +10,16 @@ node_modules
 .DS_Store
 *.local
 
+# Python virtual environment & database
+venv/
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

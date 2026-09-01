@@ -1,7 +1,9 @@
-﻿export const MOCK_USERS = [
+export const MOCK_USERS = [
   {
     roleId: 'CITIZEN',
-    name: 'Rameshwar Mahto',
+    email: 'citizen@jharkhand.gov.in',
+    password: 'Password123!',
+    name: 'Birsa Munda',
     title: 'Grassroots Citizen & Farmer',
     dept: 'Angara Block, Ranchi',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
@@ -9,22 +11,28 @@
   },
   {
     roleId: 'LOCAL_BODY',
-    name: 'Suresh Kumar Oraon',
+    email: 'localbody@jharkhand.gov.in',
+    password: 'Password123!',
+    name: 'Officer Ramesh Soren',
     title: 'Panchayat Development Officer',
-    dept: 'Local Municipal Body, Zone 3',
+    dept: 'Latehar District Panchayat',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
     description: 'Validate ground truth of reported citizen issues and issue field prototype sign-offs.'
   },
   {
     roleId: 'HEI_ADMIN',
-    name: 'Dr. Indranil Manna',
-    title: 'Vice Chancellor / Admin',
+    email: 'heiadmin@jharkhand.gov.in',
+    password: 'Password123!',
+    name: 'Prof. S. K. Mahato',
+    title: 'Dean R&D / Administrator',
     dept: 'BIT Mesra, Ranchi',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
     description: 'Oversee institutional research pipelines, manage departments, and bulk upload faculty rosters.'
   },
   {
     roleId: 'FACULTY_LEAD',
+    email: 'faculty@jharkhand.gov.in',
+    password: 'Password123!',
     name: 'Dr. Alok Kumar',
     title: 'Professor & Lead PI',
     dept: 'Environmental Engineering, BIT Mesra',
@@ -33,7 +41,9 @@
   },
   {
     roleId: 'STUDENT',
-    name: 'Priya Sharma',
+    email: 'student@jharkhand.gov.in',
+    password: 'Password123!',
+    name: 'Ananya Roy',
     title: 'Student Engineering Researcher',
     dept: 'B.Tech Environmental Engg (Sem VI)',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150',
@@ -41,17 +51,21 @@
   },
   {
     roleId: 'INDUSTRY_CSR',
-    name: 'Rajesh Chintak',
+    email: 'csr@jharkhand.gov.in',
+    password: 'Password123!',
+    name: 'Pooja Verma',
     title: 'Head of CSR Operations',
-    dept: 'Tata Steel Foundation',
+    dept: 'Tata Steel CSR Foundation',
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150',
     description: 'Pledge financial grants, offer industry mentoring, and audit project milestone deliverables.'
   },
   {
     roleId: 'GOV_ADMIN',
-    name: 'Smt. Vandana Dadel (IAS)',
+    email: 'govadmin@jharkhand.gov.in',
+    password: 'Password123!',
+    name: 'Secretary Hemant Soren',
     title: 'Principal Secretary (Higher Education)',
-    dept: 'Department of Higher & Technical Education, Govt of Jharkhand',
+    dept: 'Dept of Higher & Technical Education, Govt of Jharkhand',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
     description: 'State-wide 24-district GIS monitoring, emergency alert triggers, and CSR audit analytics.'
   }

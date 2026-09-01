@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { INITIAL_CHALLENGES, INITIAL_PROPOSALS, INITIAL_NEP_CREDITS, INITIAL_CSR_PARTNERS } from '../data/mockData';
 import { MOCK_USERS } from '../data/mockUsers';
+import { TRANSLATIONS } from '../data/translations';
 import { calculateAiSeverity } from '../utils/aiEngine';
 import { checkGeoSemanticDuplicates } from '../utils/geoDeduplication';
 import { routeChallengeToHei } from '../utils/heiRouting';
@@ -18,6 +19,26 @@ export const ROLES = {
 };
 
 export const AppProvider = ({ children }) => {
+  // Bilingual Language State ('en' or 'hi')
+  const [language, setLanguage] = useState(() => {
+    try {
+      return localStorage.getItem('sih_portal_lang') || 'en';
+    } catch {
+      return 'en';
+    }
+  });
+
+  const toggleLanguage = () => {
+    setLanguage(prev => {
+      const next = prev === 'en' ? 'hi' : 'en';
+      localStorage.setItem('sih_portal_lang', next);
+      return next;
+    });
+  };
+
+  // Global search query
+  const [globalSearch, setGlobalSearch] = useState('');
+
   // Currently authenticated user profile
   const [currentUser, setCurrentUser] = useState(() => {
     try {
@@ -64,6 +85,10 @@ export const AppProvider = ({ children }) => {
 
   // Sync state to LocalStorage
   useEffect(() => {
+    localStorage.setItem('sih_portal_lang', language);
+  }, [language]);
+
+  useEffect(() => {
     localStorage.setItem('sih_portal_user', JSON.stringify(currentUser));
   }, [currentUser]);
 
@@ -100,6 +125,9 @@ export const AppProvider = ({ children }) => {
       setCurrentUser(matchedUser);
     }
   };
+
+  // Translation accessor
+  const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   // Citizen Action: Submit Challenge
   const addChallenge = (newChallengeData) => {
@@ -307,6 +335,11 @@ export const AppProvider = ({ children }) => {
 
   return (
     <AppContext.Provider value={{
+      language,
+      toggleLanguage,
+      t,
+      globalSearch,
+      setGlobalSearch,
       currentUser,
       currentRole,
       setCurrentRole: switchRole,

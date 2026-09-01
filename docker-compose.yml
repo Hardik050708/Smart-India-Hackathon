@@ -1,12 +1,56 @@
 version: '3.8'
 
 services:
-  portal-frontend:
+  # PostgreSQL 16 Database with Spatial Indexing Support
+  db:
+    image: postgres:16-alpine
+    container_name: jharkhand_portal_db
+    restart: always
+    environment:
+      POSTGRES_USER: jharkhand_admin
+      POSTGRES_PASSWORD: jharkhand_secure_pass_2026
+      POSTGRES_DB: jharkhand_innovation_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jharkhand_admin -d jharkhand_innovation_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Async Backend with AI Severity Engine & RBAC
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: jharkhand_portal_backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://jharkhand_admin:jharkhand_secure_pass_2026@db:5432/jharkhand_innovation_db
+      JWT_SECRET: sih2026_jharkhand_societal_innovation_super_secret_key_987654321
+      ENVIRONMENT: production
+    ports:
+      - "8000:8000"
+
+  # Next.js / React Frontend Application (Linear.app Aesthetic)
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8080:80"
-    environment:
-      - NODE_ENV=production
+    container_name: jharkhand_portal_frontend
     restart: always
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8000
+    ports:
+      - "80:80"
+      - "5173:5173"
+
+volumes:
+  postgres_data:
