@@ -71,15 +71,7 @@ export const CitizenView = () => {
   };
 
   const handleNextStep = () => {
-    if (wizardStep === 3) {
-      setIsAiProcessing(true);
-      setWizardStep(4);
-      setTimeout(() => {
-        setIsAiProcessing(false);
-      }, 600);
-    } else {
-      setWizardStep(prev => Math.min(4, prev + 1));
-    }
+    setWizardStep(prev => Math.min(3, prev + 1));
   };
 
   const handlePrevStep = () => {
@@ -191,11 +183,10 @@ export const CitizenView = () => {
                     {t.citizen.launchWizard}
                   </span>
                   <h2 className="text-lg sm:text-xl font-black text-slate-900">
-                    Step {wizardStep} of 4: {
+                    Step {wizardStep} of 3: {
                       wizardStep === 1 ? t.citizen.step1 :
                       wizardStep === 2 ? t.citizen.step2 :
-                      wizardStep === 3 ? t.citizen.step3 :
-                      t.citizen.step4
+                      t.citizen.step3
                     }
                   </h2>
                 </div>
@@ -207,9 +198,9 @@ export const CitizenView = () => {
                 </button>
               </div>
 
-              {/* Progress Bar */}
-              <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-                {[t.citizen.step1, t.citizen.step2, t.citizen.step3, t.citizen.step4].map((label, idx) => (
+              {/* Progress Bar (3 Steps) */}
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                {[t.citizen.step1, t.citizen.step2, t.citizen.step3].map((label, idx) => (
                   <div key={idx} className="space-y-1">
                     <div className={`h-1.5 rounded-full transition-all duration-300 ${
                       wizardStep > idx + 1 ? 'bg-emerald-500' :
@@ -353,64 +344,6 @@ export const CitizenView = () => {
               </div>
             )}
 
-            {/* Step 4: AI Instant Assessment Card */}
-            {wizardStep === 4 && (
-              <div className="space-y-3.5 sm:space-y-4">
-                {isAiProcessing ? (
-                  <div className="bg-slate-950 text-white rounded-2xl p-6 text-center space-y-3">
-                    <Cpu className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
-                    <div className="text-xs font-bold font-mono text-emerald-400">{t.citizen.processingAi}</div>
-                    <div className="space-y-1.5 max-w-xs mx-auto">
-                      <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                        <div className="h-full bg-emerald-500 animate-pulse w-3/4"></div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-slate-950 text-white rounded-2xl p-4 sm:p-5 space-y-3 border border-slate-800 shadow-xl">
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                      <span className="text-emerald-400 font-bold text-xs flex items-center space-x-1.5 font-mono">
-                        <Sparkles className="w-4 h-4 text-emerald-400" />
-                        <span>{t.citizen.step4}</span>
-                      </span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black font-mono uppercase tracking-wider ${
-                        liveAi.isEmergency ? 'bg-rose-500 text-white animate-pulse' : 'bg-emerald-500 text-slate-950'
-                      }`}>
-                        {t.citizen.priorityScore}: {liveAi.priorityScore}/100 ({liveAi.isEmergency ? 'CRITICAL' : liveAi.urgencyTier})
-                      </span>
-                    </div>
-
-                    {/* Formula Contribution Matrix */}
-                    <div className="grid grid-cols-4 gap-1.5 sm:gap-2 text-center text-[10px] font-mono bg-slate-900/90 p-2.5 sm:p-3 rounded-xl border border-slate-800">
-                      <div>
-                        <div className="text-slate-400 text-[9px] sm:text-[10px]">{t.citizen.hazardScore}</div>
-                        <div className="text-emerald-400 font-bold text-xs sm:text-sm mt-0.5">{liveAi.breakdown.hazardContribution}</div>
-                      </div>
-                      <div>
-                        <div className="text-slate-400 text-[9px] sm:text-[10px]">{t.citizen.urgencyScore}</div>
-                        <div className="text-emerald-400 font-bold text-xs sm:text-sm mt-0.5">{liveAi.breakdown.urgencyContribution}</div>
-                      </div>
-                      <div>
-                        <div className="text-slate-400 text-[9px] sm:text-[10px]">{t.citizen.popScore}</div>
-                        <div className="text-emerald-400 font-bold text-xs sm:text-sm mt-0.5">{liveAi.breakdown.populationContribution}</div>
-                      </div>
-                      <div>
-                        <div className="text-slate-400 text-[9px] sm:text-[10px]">{t.citizen.dupScore}</div>
-                        <div className="text-emerald-400 font-bold text-xs sm:text-sm mt-0.5">{liveAi.breakdown.duplicateContribution}</div>
-                      </div>
-                    </div>
-
-                    {liveAi.isEmergency && (
-                      <div className="bg-rose-950/40 border border-rose-800/60 p-2.5 rounded-xl text-[10px] sm:text-[11px] text-rose-300 flex items-center space-x-2">
-                        <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0" />
-                        <span>{t.citizen.emergencyTrigger}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* Wizard Navigation Footer */}
             <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-slate-200">
               {wizardStep > 1 ? (
@@ -432,7 +365,7 @@ export const CitizenView = () => {
                 </button>
               )}
 
-              {wizardStep < 4 ? (
+              {wizardStep < 3 ? (
                 <button
                   type="button"
                   onClick={handleNextStep}
