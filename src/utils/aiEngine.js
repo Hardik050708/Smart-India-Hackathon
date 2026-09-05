@@ -3,34 +3,56 @@
  * Formula: Priority Score = (0.40 * Hazard) + (0.35 * Urgency) + (0.15 * Population) + (0.10 * DuplicateSpike)
  */
 
-const CRITICAL_HAZARD_KEYWORDS = [
+const CRITICAL_HAZARD_KEYWORDS_EN = [
   'toxic', 'arsenic', 'poison', 'contamination', 'chemical spill', 'groundwater',
   'bridge structural', 'bridge collapse', 'landslide', 'outbreak', 'cholera', 'diarrhea',
   'washout', 'road block emergency', 'fire', 'mine fire', 'coal field', 'gas leak',
-  'high voltage', 'electrocution', 'flooding', 'drowning', 'sewage leak'
+  'high voltage', 'electrocution', 'flooding', 'drowning', 'sewage leak', 'cyanide',
+  'fluoride', 'subsidence', 'effluent', 'heavy metal', 'pest', 'infestation', 'drought'
 ];
 
-export const calculateAiSeverity = ({ title, description, category, populationAffected = 100, duplicateCount = 0 }) => {
+const CRITICAL_HAZARD_KEYWORDS_HI = [
+  'जहरीला', 'जहरीली', 'विषैला', 'विषैली', 'आर्सेनिक', 'संदूषण', 'प्रदूषण', 'रासायनिक',
+  'भूजल', 'पुल ढहना', 'पुल गिरना', 'दरार', 'भूस्खलन', 'महामारी', 'बीमारी', 'हैजा', 'डायरिया',
+  'दस्त', 'आग', 'कोयला आग', 'खदान', 'गैस रिसाव', 'बिजली', 'करंट', 'बाढ़', 'डूबने',
+  'सीवेज', 'कटाव', 'फ्लोराइड', 'सूखा', 'कीट', 'बर्बाद', 'नष्ट', 'मिट्टी कटाव', 'खतरा'
+];
+
+export const calculateAiSeverity = ({ title = '', description = '', category = '', populationAffected = 100, duplicateCount = 0 }) => {
   const fullText = `${title} ${description}`.toLowerCase();
 
-  // Layer 1: Critical Hazard Screening (0 - 100)
+  // Layer 1: Critical Hazard Screening (Bilingual: English & Hindi)
   let hazardScore = 20; // baseline
-  const matchedKeywords = CRITICAL_HAZARD_KEYWORDS.filter(kw => fullText.includes(kw));
-  if (matchedKeywords.length > 0) {
-    hazardScore = Math.min(100, 50 + matchedKeywords.length * 20);
+  const matchedEn = CRITICAL_HAZARD_KEYWORDS_EN.filter(kw => fullText.includes(kw));
+  const matchedHi = CRITICAL_HAZARD_KEYWORDS_HI.filter(kw => fullText.includes(kw));
+  const totalMatches = matchedEn.length + matchedHi.length;
+
+  if (totalMatches > 0) {
+    hazardScore = Math.min(100, 50 + totalMatches * 20);
   }
 
-  // Layer 2: Transformer-based Semantic Urgency Analysis
+  // Layer 2: Transformer-based Semantic Urgency Analysis (Bilingual)
   let urgencyTier = 'Low';
   let urgencyScore = 30;
 
-  if (matchedKeywords.length >= 2 || fullText.includes('urgent') || fullText.includes('immediate') || fullText.includes('danger')) {
+  const hasCriticalPrompt = totalMatches >= 2 ||
+    fullText.includes('urgent') || fullText.includes('immediate') || fullText.includes('danger') || fullText.includes('emergency') ||
+    fullText.includes('अति-गंभीर') || fullText.includes('तत्काल') || fullText.includes('आपातकालीन') || fullText.includes('खतरनाक');
+
+  const hasHighPrompt = totalMatches === 1 ||
+    fullText.includes('severe') || fullText.includes('broken') || fullText.includes('outage') ||
+    fullText.includes('गंभीर') || fullText.includes('टूट गया') || fullText.includes('टूटा') || fullText.includes('संकट');
+
+  const hasMediumPrompt = fullText.includes('repair') || fullText.includes('clean') || fullText.includes('maintenance') ||
+    fullText.includes('मरम्मत') || fullText.includes('सफाई') || fullText.includes('सुधार') || fullText.includes('अनुरोध');
+
+  if (hasCriticalPrompt) {
     urgencyTier = 'Critical';
     urgencyScore = 95;
-  } else if (matchedKeywords.length === 1 || fullText.includes('severe') || fullText.includes('broken') || fullText.includes('outage')) {
+  } else if (hasHighPrompt) {
     urgencyTier = 'High';
     urgencyScore = 75;
-  } else if (fullText.includes('repair') || fullText.includes('clean') || fullText.includes('maintenance')) {
+  } else if (hasMediumPrompt) {
     urgencyTier = 'Medium';
     urgencyScore = 55;
   }

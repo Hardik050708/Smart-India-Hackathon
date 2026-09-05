@@ -8,8 +8,9 @@ import {
   AlertTriangle, MapPin, ThumbsUp, PlusCircle, Sparkles, CheckCircle2,
   ShieldAlert, Search, Filter, Clock, CheckCircle, ArrowRight, ArrowLeft,
   Layers, FileText, Upload, Camera, Cpu, Activity, Info, Trash2, Eye, X,
-  Users, Calendar, ExternalLink
+  Users, Calendar, ExternalLink, Languages, Globe2
 } from 'lucide-react';
+import { isHindiText } from '../../utils/translator';
 
 export const CitizenView = () => {
   const { challenges, addChallenge, deleteChallenge, upvoteChallenge, currentUser, t, globalSearch, language } = useApp();
@@ -20,6 +21,7 @@ export const CitizenView = () => {
   const [showWizard, setShowWizard] = useState(false);
   const [wizardStep, setWizardStep] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
+  const [modalLang, setModalLang] = useState(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -252,6 +254,17 @@ export const CitizenView = () => {
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900 font-medium"
                   />
                 </div>
+
+                {(isHindiText(formData.title) || isHindiText(formData.description)) && (
+                  <div className="flex items-center space-x-2 text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl font-medium animate-in fade-in">
+                    <Languages className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>
+                      {language === 'hi'
+                        ? '✓ हिन्दी पहचानी गई: AI इंजन इसे सीधे समझेगा और शोधकर्ताओं के लिए अंग्रेजी में भी उपलब्ध कराएगा।'
+                        : '✓ Hindi Input Detected: AI severity engine natively reads Hindi and translates it to English for HEIs & CSR.'}
+                    </span>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -557,53 +570,85 @@ export const CitizenView = () => {
       )}
 
       {/* Full Problem Description & Details Modal */}
-      {selectedReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-7 md:p-8 shadow-2xl border border-slate-200 space-y-5 sm:space-y-6 relative my-auto max-h-[90vh] overflow-y-auto animate-in zoom-in-95">
-            
-            {/* Modal Header */}
-            <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-4">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-                  <span className="text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                    {selectedReport.category}
-                  </span>
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
-                    {selectedReport.district}
+      {selectedReport && (() => {
+        const currentModalLang = modalLang || language;
+        const displayTitle = currentModalLang === 'hi'
+          ? (selectedReport.title_hi || selectedReport.title)
+          : (selectedReport.title || selectedReport.title_hi);
+        const displayDesc = currentModalLang === 'hi'
+          ? (selectedReport.description_hi || selectedReport.description)
+          : (selectedReport.description || selectedReport.description_hi);
+        const displayCategory = currentModalLang === 'hi'
+          ? (selectedReport.category_hi || selectedReport.category)
+          : (selectedReport.category || selectedReport.category_hi);
+        const displayAddress = currentModalLang === 'hi'
+          ? (selectedReport.address_hi || selectedReport.address)
+          : (selectedReport.address || selectedReport.address_hi);
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto animate-in fade-in">
+            <div className="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-7 md:p-8 shadow-2xl border border-slate-200 space-y-5 sm:space-y-6 relative my-auto max-h-[90vh] overflow-y-auto animate-in zoom-in-95">
+              
+              {/* Modal Header */}
+              <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-4">
+                <div className="space-y-1.5 flex-1">
+                  <div className="flex items-center space-x-2 flex-wrap gap-y-1.5">
+                    <span className="text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      {displayCategory}
+                    </span>
+                    <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                      {selectedReport.district}
+                    </span>
+
+                    {/* Bilingual language switcher for this report */}
+                    <button
+                      onClick={() => setModalLang(current => (current || language) === 'hi' ? 'en' : 'hi')}
+                      className="flex items-center space-x-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition shadow-xs"
+                      title="Translate between English and Hindi"
+                    >
+                      <Languages className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>{currentModalLang === 'hi' ? 'Read in English' : 'मूल हिन्दी में देखें'}</span>
+                    </button>
+                  </div>
+
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 leading-snug mt-1">
+                    {displayTitle}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => { setSelectedReport(null); setModalLang(null); }}
+                  className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition shrink-0"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Complete Full Problem Description */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    {t.citizen.description}
+                  </h4>
+                  <span className="text-[10px] font-semibold text-emerald-600 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    {currentModalLang === 'hi' ? 'द्विभाषी अनुवाद' : 'Bilingual AI Verified'}
                   </span>
                 </div>
-                <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 leading-snug mt-1">
-                  {selectedReport.title}
-                </h2>
+                <p className="text-sm sm:text-base text-slate-700 leading-relaxed bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-100 whitespace-pre-wrap">
+                  {displayDesc}
+                </p>
               </div>
-              <button
-                onClick={() => setSelectedReport(null)}
-                className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
 
-            {/* Complete Full Problem Description */}
-            <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                {t.citizen.description}
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-100 whitespace-pre-wrap">
-                {selectedReport.description}
-              </p>
-            </div>
-
-            {/* Location & GPS Info */}
-            <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-2 text-xs">
-              <div className="font-bold text-emerald-950 flex items-center space-x-1.5">
-                <MapPin className="w-4 h-4 text-emerald-600" />
-                <span>{selectedReport.address || selectedReport.district}</span>
+              {/* Location & GPS Info */}
+              <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-2 text-xs">
+                <div className="font-bold text-emerald-950 flex items-center space-x-1.5">
+                  <MapPin className="w-4 h-4 text-emerald-600" />
+                  <span>{displayAddress}</span>
+                </div>
+                <div className="text-emerald-800 text-[11px] flex items-center space-x-3">
+                  <span>GPS Coordinates: {selectedReport.lat?.toFixed(4)}° N, {selectedReport.lng?.toFixed(4)}° E</span>
+                </div>
               </div>
-              <div className="text-emerald-800 text-[11px] flex items-center space-x-3">
-                <span>GPS Coordinates: {selectedReport.lat?.toFixed(4)}° N, {selectedReport.lng?.toFixed(4)}° E</span>
-              </div>
-            </div>
 
             {/* Key Metadata Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
@@ -673,7 +718,7 @@ export const CitizenView = () => {
               </button>
 
               <div className="flex items-center space-x-2">
-                {isUserSubmission(selectedReport) && (
+                {activeTab === 'my_submissions' && (
                   <button
                     onClick={(e) => handleDeleteReport(e, selectedReport.id)}
                     className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-xs font-bold transition"
@@ -684,7 +729,7 @@ export const CitizenView = () => {
                 )}
 
                 <button
-                  onClick={() => setSelectedReport(null)}
+                  onClick={() => { setSelectedReport(null); setModalLang(null); }}
                   className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-sm"
                 >
                   Close
@@ -694,7 +739,8 @@ export const CitizenView = () => {
 
           </div>
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 };
