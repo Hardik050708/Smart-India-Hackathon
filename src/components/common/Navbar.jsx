@@ -114,19 +114,6 @@ export const Navbar = () => {
                   <LogIn className="w-3 h-3" />
                 </div>
               </button>
-
-              {/* Reset Data */}
-              <button
-                onClick={() => {
-                  if (window.confirm(language === 'hi' ? 'क्या आप सभी डेटा को रीसेट करना चाहते हैं?' : 'Reset all portal data back to original Jharkhand dataset?')) {
-                    resetToDefaultData();
-                  }
-                }}
-                title={t.resetData}
-                className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition border border-slate-800 flex items-center justify-center shrink-0"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-              </button>
             </div>
           </div>
 
