@@ -104,12 +104,8 @@ export const CitizenView = () => {
 
   const isUserSubmission = (item) => {
     if (!item) return false;
-    const currentUserName = (currentUser?.name || '').toLowerCase();
-    const reporter = (item.reportedBy || '').toLowerCase();
-    return (currentUserName && reporter.includes(currentUserName)) ||
-           reporter.includes('birsa munda') ||
-           reporter.includes('citizen') ||
-           activeTab === 'my_submissions';
+    // Strictly personal reports in the "My Reports" tab, never on main page
+    return activeTab === 'my_submissions';
   };
 
   const handleDeleteReport = (e, challengeId) => {
