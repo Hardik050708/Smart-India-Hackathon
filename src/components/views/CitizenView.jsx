@@ -7,18 +7,19 @@ import { getLocalizedChallenge } from '../../data/mockData';
 import {
   AlertTriangle, MapPin, ThumbsUp, PlusCircle, Sparkles, CheckCircle2,
   ShieldAlert, Search, Filter, Clock, CheckCircle, ArrowRight, ArrowLeft,
-  Layers, FileText, Upload, Camera, Cpu, Activity, Info
+  Layers, FileText, Upload, Camera, Cpu, Activity, Info, Trash2, Eye, X,
+  Users, Calendar, ExternalLink
 } from 'lucide-react';
 
 export const CitizenView = () => {
-  const { challenges, addChallenge, upvoteChallenge, currentUser, t, globalSearch, language } = useApp();
+  const { challenges, addChallenge, deleteChallenge, upvoteChallenge, currentUser, t, globalSearch, language } = useApp();
 
   const [activeTab, setActiveTab] = useState('all'); // 'all' | 'my_submissions'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [showWizard, setShowWizard] = useState(false);
   const [wizardStep, setWizardStep] = useState(1);
-  const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -99,6 +100,27 @@ export const CitizenView = () => {
       evidenceFile: null,
       evidencePreview: null
     });
+  };
+
+  const isUserSubmission = (item) => {
+    if (!item) return false;
+    const currentUserName = (currentUser?.name || '').toLowerCase();
+    const reporter = (item.reportedBy || '').toLowerCase();
+    return (currentUserName && reporter.includes(currentUserName)) ||
+           reporter.includes('birsa munda') ||
+           reporter.includes('citizen') ||
+           activeTab === 'my_submissions';
+  };
+
+  const handleDeleteReport = (e, challengeId) => {
+    if (e) e.stopPropagation();
+    const confirmMsg = t.citizen.deleteConfirm || (language === 'hi' ? 'क्या आप इस समस्या रिपोर्ट को हटाना चाहते हैं?' : 'Are you sure you want to delete this challenge report?');
+    if (window.confirm(confirmMsg)) {
+      deleteChallenge(challengeId);
+      if (selectedReport && selectedReport.id === challengeId) {
+        setSelectedReport(null);
+      }
+    }
   };
 
   // Combined search (local input + global search in navbar)
@@ -450,43 +472,84 @@ export const CitizenView = () => {
 
       {/* Challenges Bento-Grid View - Responsive Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-        {filteredChallenges.map(item => (
-          <div
-            key={item.id}
-            className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between space-y-4 group overflow-hidden"
-          >
-            <div className="space-y-3">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                  {item.category}
-                </span>
-                {item.reportedDate && (
-                  <span className="text-[10px] text-slate-400 font-medium">
-                    {item.reportedDate}
+        {filteredChallenges.map(item => {
+          const userCanDelete = isUserSubmission(item);
+
+          return (
+            <div
+              key={item.id}
+              onClick={() => setSelectedReport(item)}
+              className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-emerald-300 transition duration-200 flex flex-col justify-between space-y-4 group overflow-hidden cursor-pointer"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    {item.category}
                   </span>
-                )}
+                  {item.reportedDate && (
+                    <span className="text-[10px] text-slate-400 font-medium">
+                      {item.reportedDate}
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-emerald-700 transition">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 line-clamp-3 mt-1.5 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <h3 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-emerald-700 transition">
-                  {item.title}
-                </h3>
-                <p className="text-xs text-slate-600 line-clamp-3 mt-1.5 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            </div>
+              <div className="pt-3 border-t border-slate-100 text-xs space-y-2.5">
+                <div className="flex items-start space-x-1.5 text-slate-600">
+                  <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="text-[11px] leading-tight font-medium truncate">
+                    <span>{item.address || item.district}</span>
+                  </div>
+                </div>
 
-            <div className="pt-3 border-t border-slate-100 text-xs space-y-1">
-              <div className="flex items-start space-x-1.5 text-slate-600">
-                <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                <div className="text-[11px] leading-tight font-medium">
-                  <span>{item.address || item.district}</span>
+                {/* Card Action Row: Upvotes, View Details, Delete Button */}
+                <div className="flex items-center justify-between pt-1 gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      upvoteChallenge(item.id);
+                    }}
+                    className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl font-bold text-xs transition active:scale-95 ${
+                      item.upvotedByUser
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    }`}
+                    title={item.upvotedByUser ? 'Remove Upvote' : 'Upvote Challenge'}
+                  >
+                    <ThumbsUp className={`w-3.5 h-3.5 ${item.upvotedByUser ? 'fill-emerald-600 text-emerald-600' : ''}`} />
+                    <span>{item.upvotes || 0}</span>
+                    <span className="text-[10px] font-semibold text-slate-500">{t.citizen.upvotes}</span>
+                  </button>
+
+                  <div className="flex items-center space-x-1.5">
+                    <span className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-0.5">
+                      {t.citizen.viewFullDetails} &rarr;
+                    </span>
+
+                    {userCanDelete && (
+                      <button
+                        onClick={(e) => handleDeleteReport(e, item.id)}
+                        className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                        title={t.citizen.deleteReport}
+                      >
+                        <Trash2 className="w-4 h-4 text-rose-500" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {filteredChallenges.length === 0 && (
@@ -494,6 +557,146 @@ export const CitizenView = () => {
           <AlertTriangle className="w-8 h-8 mx-auto text-slate-400" />
           <div className="font-bold text-slate-700 text-sm">No Challenges Matched</div>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">Try adjusting your search terms or filter domain.</p>
+        </div>
+      )}
+
+      {/* Full Problem Description & Details Modal */}
+      {selectedReport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-7 md:p-8 shadow-2xl border border-slate-200 space-y-5 sm:space-y-6 relative my-auto max-h-[90vh] overflow-y-auto animate-in zoom-in-95">
+            
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                  <span className="text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    {selectedReport.category}
+                  </span>
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                    {selectedReport.district}
+                  </span>
+                </div>
+                <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 leading-snug mt-1">
+                  {selectedReport.title}
+                </h2>
+              </div>
+              <button
+                onClick={() => setSelectedReport(null)}
+                className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Complete Full Problem Description */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                {t.citizen.description}
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 leading-relaxed bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-100 whitespace-pre-wrap">
+                {selectedReport.description}
+              </p>
+            </div>
+
+            {/* Location & GPS Info */}
+            <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-2 text-xs">
+              <div className="font-bold text-emerald-950 flex items-center space-x-1.5">
+                <MapPin className="w-4 h-4 text-emerald-600" />
+                <span>{selectedReport.address || selectedReport.district}</span>
+              </div>
+              <div className="text-emerald-800 text-[11px] flex items-center space-x-3">
+                <span>GPS Coordinates: {selectedReport.lat?.toFixed(4)}° N, {selectedReport.lng?.toFixed(4)}° E</span>
+              </div>
+            </div>
+
+            {/* Key Metadata Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+              {selectedReport.populationAffected && (
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <div className="text-[10px] text-slate-400 uppercase font-semibold flex items-center gap-1">
+                    <Users className="w-3 h-3 text-slate-400" />
+                    <span>{t.citizen.populationAffected}</span>
+                  </div>
+                  <div className="font-black text-slate-900 text-sm mt-0.5">
+                    {selectedReport.populationAffected.toLocaleString()} citizens
+                  </div>
+                </div>
+              )}
+
+              {selectedReport.reportedDate && (
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <div className="text-[10px] text-slate-400 uppercase font-semibold flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-slate-400" />
+                    <span>Date Reported</span>
+                  </div>
+                  <div className="font-bold text-slate-800 text-xs mt-1">
+                    {selectedReport.reportedDate}
+                  </div>
+                </div>
+              )}
+
+              {selectedReport.reportedBy && (
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 col-span-2 sm:col-span-1">
+                  <div className="text-[10px] text-slate-400 uppercase font-semibold">
+                    Reported By
+                  </div>
+                  <div className="font-bold text-slate-800 text-xs mt-1 truncate">
+                    {selectedReport.reportedBy}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Evidence Image Preview if attached */}
+            {selectedReport.evidencePreview && (
+              <div className="space-y-1.5">
+                <div className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
+                  <Camera className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{t.citizen.evidenceAttached}</span>
+                </div>
+                <img
+                  src={selectedReport.evidencePreview}
+                  alt="Evidence"
+                  className="rounded-2xl max-h-60 w-full object-cover border border-slate-200 shadow-sm"
+                />
+              </div>
+            )}
+
+            {/* Modal Bottom Actions: Upvote, Delete, Close */}
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100 gap-3">
+              <button
+                onClick={() => upvoteChallenge(selectedReport.id)}
+                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold text-xs transition ${
+                  selectedReport.upvotedByUser
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                }`}
+              >
+                <ThumbsUp className={`w-4 h-4 ${selectedReport.upvotedByUser ? 'fill-emerald-600 text-emerald-600' : ''}`} />
+                <span>{selectedReport.upvotes || 0} {t.citizen.upvotes}</span>
+              </button>
+
+              <div className="flex items-center space-x-2">
+                {isUserSubmission(selectedReport) && (
+                  <button
+                    onClick={(e) => handleDeleteReport(e, selectedReport.id)}
+                    className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-xs font-bold transition"
+                  >
+                    <Trash2 className="w-4 h-4 text-rose-600" />
+                    <span>{t.citizen.deleteReport}</span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => setSelectedReport(null)}
+                  className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+          </div>
         </div>
       )}
     </div>

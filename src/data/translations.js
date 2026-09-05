@@ -60,7 +60,12 @@ export const TRANSLATIONS = {
       allChallengesTab: "All Challenges",
       myReportsTab: "My Reports",
       upvotes: "Upvotes",
-      status: "Status"
+      status: "Status",
+      deleteReport: "Delete",
+      deleteConfirm: "Are you sure you want to delete this challenge report? This cannot be undone.",
+      viewFullDetails: "Read Full Details",
+      detailsModalTitle: "Full Problem Description & Ground Details",
+      evidenceAttached: "Evidence & Site Photo Attached"
     },
 
     // HEI Admin View
@@ -182,7 +187,12 @@ export const TRANSLATIONS = {
       allChallengesTab: "सभी चुनौतियां",
       myReportsTab: "मेरी रिपोर्टें",
       upvotes: "समर्थन",
-      status: "स्थिति"
+      status: "स्थिति",
+      deleteReport: "हटाएं",
+      deleteConfirm: "क्या आप वाकई इस समस्या रिपोर्ट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।",
+      viewFullDetails: "पूरा विवरण देखें",
+      detailsModalTitle: "समस्या का संपूर्ण विवरण एवं जमीनी डेटा",
+      evidenceAttached: "संलग्न साक्ष्य एवं साइट की तस्वीर"
     },
 
     // HEI Admin View

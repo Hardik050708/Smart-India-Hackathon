@@ -191,6 +191,12 @@ export const AppProvider = ({ children }) => {
     }));
   };
 
+  // Delete challenge (for accidental submission)
+  const deleteChallenge = (id) => {
+    setChallenges(prev => prev.filter(c => c.id !== id));
+    setProposals(prev => prev.filter(p => p.challengeId !== id));
+  };
+
   // Local Body Verification Sign-off
   const verifyChallengeByLocalBody = (id, notes) => {
     setChallenges(prev => prev.map(c => {
@@ -354,6 +360,7 @@ export const AppProvider = ({ children }) => {
       csrPartners,
       facultyRoster,
       addChallenge,
+      deleteChallenge,
       upvoteChallenge,
       verifyChallengeByLocalBody,
       submitProposal,
