@@ -159,9 +159,13 @@ export const CitizenView = () => {
         <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl p-4 flex items-start space-x-3 shadow-sm animate-in fade-in">
           <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
           <div className="flex-1 text-xs">
-            <div className="font-bold text-emerald-950 text-sm">Challenge Registered: {submitSuccess.id}</div>
+            <div className="font-bold text-emerald-950 text-sm">
+              {language === 'hi' ? 'समस्या सफलतापूर्वक दर्ज की गई' : 'Challenge Successfully Registered'}
+            </div>
             <p className="text-emerald-700 mt-0.5">
-              Priority Score: <strong>{submitSuccess.priorityScore}/100</strong>. Routed to <strong>{submitSuccess.routedHei}</strong>.
+              {language === 'hi'
+                ? `आपकी रिपोर्ट संबंधित संस्थान (${submitSuccess.routedHei}) को समाधान हेतु अग्रेषित कर दी गई है।`
+                : `Your report has been received and routed to ${submitSuccess.routedHei} for field evaluation.`}
             </p>
           </div>
           <button onClick={() => setSubmitSuccess(null)} className="text-emerald-700 hover:text-emerald-950 font-bold text-xs">
@@ -446,69 +450,43 @@ export const CitizenView = () => {
 
       {/* Challenges Bento-Grid View - Responsive Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-        {filteredChallenges.map(item => {
-          const isEmergency = Boolean(item.isEmergency || (item.priorityScore && item.priorityScore > 85));
-          const score = item.priorityScore || 50;
-
-          return (
-            <div
-              key={item.id}
-              className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between space-y-4 relative group overflow-hidden"
-            >
-              {isEmergency && (
-                <div className="absolute top-0 left-0 right-0 h-1 bg-rose-500"></div>
-              )}
-
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                    isEmergency
-                      ? 'bg-rose-100 text-rose-700 border border-rose-200'
-                      : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                  }`}>
-                    {isEmergency ? (language === 'hi' ? 'अति-गंभीर आपातकालीन' : 'Critical Emergency') : item.category}
+        {filteredChallenges.map(item => (
+          <div
+            key={item.id}
+            className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between space-y-4 group overflow-hidden"
+          >
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  {item.category}
+                </span>
+                {item.reportedDate && (
+                  <span className="text-[10px] text-slate-400 font-medium">
+                    {item.reportedDate}
                   </span>
-                </div>
-
-                <div>
-                  <h3 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-emerald-700 transition">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 line-clamp-3 mt-1.5 leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
+                )}
               </div>
 
-              <div className="space-y-3 pt-3 border-t border-slate-100 text-xs">
-                <div className="flex items-center justify-between text-slate-500 text-[11px]">
-                  <span className="flex items-center space-x-1 truncate max-w-[200px]">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    <span className="truncate font-medium">{item.district}</span>
-                  </span>
-                </div>
+              <div>
+                <h3 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-emerald-700 transition">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-slate-600 line-clamp-3 mt-1.5 leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            </div>
 
-                <div className="flex items-center justify-between gap-2">
-                  <button
-                    onClick={() => upvoteChallenge(item.id)}
-                    className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl font-bold text-xs transition ${
-                      item.upvotedByUser
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
-                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                    }`}
-                  >
-                    <ThumbsUp className="w-3.5 h-3.5" />
-                    <span>{item.upvotes || 0} {t.citizen.upvotes}</span>
-                  </button>
-
-                  <span className="text-[10px] font-bold text-slate-500 capitalize truncate">
-                    {t.citizen.status}: <span className="text-slate-800 font-semibold">{item.status ? item.status.replace('_', ' ') : 'Reported'}</span>
-                  </span>
+            <div className="pt-3 border-t border-slate-100 text-xs space-y-1">
+              <div className="flex items-start space-x-1.5 text-slate-600">
+                <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="text-[11px] leading-tight font-medium">
+                  <span>{item.address || item.district}</span>
                 </div>
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       {filteredChallenges.length === 0 && (

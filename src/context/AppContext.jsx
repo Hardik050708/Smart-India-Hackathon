@@ -58,8 +58,12 @@ export const AppProvider = ({ children }) => {
   });
 
   const [challenges, setChallenges] = useState(() => {
-    const saved = localStorage.getItem('sih_portal_challenges');
-    return saved ? JSON.parse(saved) : INITIAL_CHALLENGES;
+    try {
+      const saved = localStorage.getItem('sih_portal_challenges_v3');
+      return saved ? JSON.parse(saved) : INITIAL_CHALLENGES;
+    } catch {
+      return INITIAL_CHALLENGES;
+    }
   });
 
   const [proposals, setProposals] = useState(() => {
@@ -97,7 +101,7 @@ export const AppProvider = ({ children }) => {
   }, [currentRole]);
 
   useEffect(() => {
-    localStorage.setItem('sih_portal_challenges', JSON.stringify(challenges));
+    localStorage.setItem('sih_portal_challenges_v3', JSON.stringify(challenges));
   }, [challenges]);
 
   useEffect(() => {
