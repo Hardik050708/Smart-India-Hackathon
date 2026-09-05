@@ -59,7 +59,6 @@ export default function App() {
     <AppProvider>
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans antialiased text-slate-900 selection:bg-teal-600 selection:text-white">
         <Navbar />
-        <RoleSwitcher />
         <MainContent />
         <footer className="mt-auto bg-slate-950 text-slate-400 border-t border-slate-900 py-8 text-center text-xs">
           <div className="max-w-7xl mx-auto px-4 space-y-2">

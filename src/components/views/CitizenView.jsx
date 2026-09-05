@@ -466,11 +466,7 @@ export const CitizenView = () => {
                       ? 'bg-rose-100 text-rose-700 border border-rose-200'
                       : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                   }`}>
-                    {isEmergency ? 'Critical Emergency' : item.category}
-                  </span>
-
-                  <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-                    Score: {score}
+                    {isEmergency ? (language === 'hi' ? 'अति-गंभीर आपातकालीन' : 'Critical Emergency') : item.category}
                   </span>
                 </div>
 
@@ -486,11 +482,10 @@ export const CitizenView = () => {
 
               <div className="space-y-3 pt-3 border-t border-slate-100 text-xs">
                 <div className="flex items-center justify-between text-slate-500 text-[11px]">
-                  <span className="flex items-center space-x-1 truncate max-w-[150px]">
+                  <span className="flex items-center space-x-1 truncate max-w-[200px]">
                     <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    <span className="truncate">{item.district}</span>
+                    <span className="truncate font-medium">{item.district}</span>
                   </span>
-                  <span className="font-mono text-slate-400 text-[10px]">{item.id}</span>
                 </div>
 
                 <div className="flex items-center justify-between gap-2">

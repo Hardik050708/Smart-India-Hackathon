@@ -34,10 +34,10 @@ export const TRANSLATIONS = {
 
     // Citizen View
     citizen: {
-      tag: "Citizen Reporting Hub • 24 Districts",
+      tag: "Citizen Reporting Hub",
       title: "Report Grassroots Societal Challenges",
       subtitle: "Submit local infrastructure, water, agriculture, or environmental hazards. Our automated server-side AI engine processes severity assessment, duplicates, and institution routing in the backend.",
-      launchWizard: "Report a Challenge (3 Steps)",
+      launchWizard: "Report a Challenge",
       step1: "Problem Details",
       step2: "GPS Map Anchor",
       step3: "Evidence & Media",
@@ -156,10 +156,10 @@ export const TRANSLATIONS = {
 
     // Citizen View
     citizen: {
-      tag: "नागरिक रिपोर्टिंग केंद्र • 24 जिले",
+      tag: "नागरिक रिपोर्टिंग केंद्र",
       title: "जमीनी सामाजिक समस्याओं की रिपोर्ट करें",
       subtitle: "स्थानीय बुनियादी ढांचे, जल गुणवत्ता, कृषि या पर्यावरणीय खतरों की रिपोर्ट दर्ज करें। हमारा सर्वर-आधारित AI इंजन गंभीरता, डुप्लिकेशन और विश्वविद्यालय आवंटन को बैकएंड में स्वचालित रूप से संसाधित करता है।",
-      launchWizard: "समस्या दर्ज करें (3 चरण)",
+      launchWizard: "समस्या दर्ज करें",
       step1: "समस्या का विवरण",
       step2: "जीपीएस मानचित्र स्थान",
       step3: "साक्ष्य एवं मीडिया",

@@ -40,9 +40,6 @@ export const Navbar = () => {
                   <h1 className="font-extrabold text-sm sm:text-base md:text-lg tracking-tight leading-tight text-white line-clamp-1">
                     {t.portalTitle}
                   </h1>
-                  <span className="hidden xl:inline-block bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-black text-[10px] px-2 py-0.5 rounded-full font-mono uppercase tracking-wider">
-                    {t.sihBadge}
-                  </span>
                 </div>
                 <p className="text-[11px] sm:text-xs text-slate-400 hidden sm:block font-medium truncate max-w-sm lg:max-w-md">
                   {t.portalSubtitle}
@@ -70,7 +67,7 @@ export const Navbar = () => {
               )}
             </div>
 
-            {/* Actions: Search (Mobile), Hindi Language Toggle, AI Formula, User Profile */}
+            {/* Actions: Search (Mobile), Hindi Language Toggle, User Profile */}
             <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
               
               {/* Mobile Search Toggle */}
@@ -90,16 +87,6 @@ export const Navbar = () => {
               >
                 <Globe2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <span className="font-bold tracking-wide">{t.languageToggle}</span>
-              </button>
-
-              {/* AI Formula Engine Inspector Button */}
-              <button
-                onClick={() => setShowAiModal(true)}
-                className="hidden sm:flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl text-emerald-400 hover:text-emerald-300 text-xs font-bold transition shadow-sm"
-                title={t.aiFormulaModalTitle}
-              >
-                <Cpu className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-                <span className="hidden lg:inline">{t.aiFormula}</span>
               </button>
 
               {/* User Profile / Role Trigger */}
