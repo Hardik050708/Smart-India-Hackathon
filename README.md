@@ -118,6 +118,15 @@ npm run dev
 ```
 Open `http://localhost:5173` in your browser.
 
+### 2b. Headless Smoke Test (no browser needed)
+```bash
+npm run smoke
+```
+Renders all 7 RBAC role views in English and Hindi, exercises the AI severity formula, the
+5km geo-dedup engine, HEI routing and the certificate/uploader modals, and boots the app against
+corrupt/legacy `localStorage` payloads. Any render-time crash (the class of bug that white-screens
+the GitHub Pages deployment) fails this command, and it runs in CI before every deploy.
+
 ### 3. Docker Compose (Full Stack)
 ```bash
 docker compose up --build

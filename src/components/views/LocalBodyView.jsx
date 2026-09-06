@@ -107,32 +107,104 @@ export const LocalBodyView = () => {
       )}
 
       {/* Challenges to verify */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-        {unverifiedList.map(c => (
-          <div key={c.id} className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-start justify-between gap-2">
-                <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 uppercase">
-                  {language === 'hi' ? 'सत्यापन प्रतीक्षारत' : 'Pending Verification'}
-                </span>
-                <span className="font-mono text-slate-400 text-[10px]">{c.id}</span>
+      {unverifiedList.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {unverifiedList.map(c => (
+            <div key={c.id} className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 uppercase">
+                    {language === 'hi' ? 'सत्यापन प्रतीक्षारत' : 'Pending Verification'}
+                  </span>
+                  <span className="font-mono text-slate-400 text-[10px]">{c.id}</span>
+                </div>
+
+                <h3 className="font-bold text-sm text-slate-900 leading-snug">{c.title}</h3>
+                <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{c.description}</p>
+                <div className="text-[11px] text-slate-500 font-medium">📍 {c.address} ({c.district})</div>
               </div>
 
-              <h3 className="font-bold text-sm text-slate-900 leading-snug">{c.title}</h3>
-              <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{c.description}</p>
-              <div className="text-[11px] text-slate-500 font-medium">📍 {c.address} ({c.district})</div>
+              <button
+                onClick={() => setSelectedChallenge(c)}
+                className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+                <span>{language === 'hi' ? 'फील्ड सत्यापन करें' : 'Inspect & Sign Off'}</span>
+              </button>
             </div>
-
-            <button
-              onClick={() => setSelectedChallenge(c)}
-              className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-              <span>{language === 'hi' ? 'फील्ड सत्यापन करें' : 'Inspect & Sign Off'}</span>
-            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl p-10 sm:p-12 text-center border border-slate-200 shadow-sm space-y-2">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-6 h-6 text-emerald-600" />
           </div>
-        ))}
-      </div>
+          <div className="font-black text-sm text-slate-800">
+            {language === 'hi' ? 'कोई भी सत्यापन लंबित नहीं है' : 'No Inspections Pending'}
+          </div>
+          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+            {language === 'hi'
+              ? 'सभी नागरिक रिपोर्टें भौतिक सत्यापन के लिए हस्ताक्षरित कर दी गई हैं। नई रिपोर्ट दर्ज होते ही यहां प्रकट होंगी।'
+              : 'Every citizen report in your jurisdiction has been signed off. Newly filed citizen reports will queue up here automatically for ground-truth verification.'}
+          </p>
+        </div>
+      )}
+
+      {/* Signed-off Audit Trail */}
+      {verifiedList.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="font-bold text-sm text-slate-900 flex items-center space-x-2">
+            <FileText className="w-4 h-4 text-emerald-600" />
+            <span>
+              {language === 'hi' ? `हस्ताक्षरित सत्यापन अभिलेख (${verifiedList.length})` : `Verified & Signed-off Audit Trail (${verifiedList.length})`}
+            </span>
+          </h3>
+
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
+            {verifiedList.map(c => (
+              <div key={c.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="space-y-1 min-w-0">
+                  <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                    <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shrink-0">
+                      <CheckCircle2 className="w-3 h-3" />
+                      {language === 'hi' ? 'सत्यापित' : 'Verified'}
+                    </span>
+                    <span className="font-mono text-slate-400 text-[10px]">{c.id}</span>
+                    {c.reportedDate && <span className="text-[10px] text-slate-400 font-medium">{c.reportedDate}</span>}
+                  </div>
+                  <div className="font-bold text-slate-900 truncate">{c.title}</div>
+                  <div className="text-[11px] text-slate-500 flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                    <span className="truncate">{c.address} ({c.district})</span>
+                  </div>
+                  {c.localBodyNotes && (
+                    <p className="text-[11px] text-slate-600 italic bg-slate-50 border border-slate-100 rounded-xl px-2.5 py-1.5 mt-1 leading-relaxed line-clamp-2">
+                      “{c.localBodyNotes}”
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                  <div className="text-right">
+                    <div className="font-mono font-black text-slate-900 text-sm">{c.priorityScore ?? '—'}<span className="text-[10px] text-slate-400 font-bold">/100</span></div>
+                    <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
+                      {language === 'hi' ? 'एआई प्राथमिकता' : 'AI Priority'}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedChallenge(c)}
+                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition flex items-center space-x-1.5"
+                    title={language === 'hi' ? 'पुनः निरीक्षण करें' : 'Re-inspect & update sign-off'}
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 text-slate-400" />
+                    <span>{language === 'hi' ? 'पुनः निरीक्षण' : 'Re-inspect'}</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

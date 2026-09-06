@@ -147,7 +147,176 @@ export const GovAdminView = () => {
           challenges={filteredChallenges}
           height="340px"
           show5kmRadius={true}
+          activeDistrict={selectedDistrict === 'ALL' ? undefined : selectedDistrict}
         />
+      </div>
+
+      {/* State-wide KPI Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm flex items-center space-x-3">
+          <div className="p-3 rounded-2xl bg-rose-50 text-rose-700 shrink-0">
+            <ShieldAlert className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[11px] text-slate-500 font-semibold">{language === 'hi' ? 'कुल रिपोर्ट' : 'Citizen Reports'}</div>
+            <div className="text-base sm:text-lg font-black text-slate-900 font-mono">{challenges.length}</div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm flex items-center space-x-3">
+          <div className="p-3 rounded-2xl bg-amber-50 text-amber-700 shrink-0">
+            <Activity className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[11px] text-slate-500 font-semibold">{language === 'hi' ? 'सक्रिय परियोजना' : 'Active HEI Projects'}</div>
+            <div className="text-base sm:text-lg font-black text-slate-900 font-mono">{proposals.length}</div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm flex items-center space-x-3">
+          <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-700 shrink-0">
+            <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[11px] text-slate-500 font-semibold">{language === 'hi' ? 'सीएसआर भागीदार' : 'CSR Partners'}</div>
+            <div className="text-base sm:text-lg font-black text-slate-900 font-mono">{csrPartners.length}</div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm flex items-center space-x-3">
+          <div className="p-3 rounded-2xl bg-indigo-50 text-indigo-700 shrink-0">
+            <Award className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[11px] text-slate-500 font-semibold">{language === 'hi' ? 'अनुदान वितरित' : 'CSR Grants Disbursed'}</div>
+            <div className="text-base sm:text-lg font-black text-slate-900 font-mono">
+              ₹{(proposals.reduce((acc, p) => acc + (p.pledgedAmount || 0), 0) / 100000).toFixed(1)} L
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Analytics Charts: District Density & Category Split */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div className="lg:col-span-2 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3">
+          <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <h3 className="font-bold text-sm text-slate-900">
+              {language === 'hi' ? 'शीर्ष 10 जिले: समस्या घनत्व' : 'Top 10 Districts: Issue Density'}
+            </h3>
+            <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg uppercase">
+              {language === 'hi' ? 'रिपोर्ट बनाम परियोजना' : 'Reports vs Projects'}
+            </span>
+          </div>
+
+          <div className="h-[260px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={districtChartData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} interval={0} angle={-30} textAnchor="end" height={54} />
+                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} allowDecimals={false} />
+                <Tooltip
+                  cursor={{ fill: 'rgba(15, 23, 42, 0.04)' }}
+                  contentStyle={{ fontSize: 11, borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 8px 24px rgba(15,23,42,0.08)' }}
+                />
+                <Bar dataKey="issues" name={language === 'hi' ? 'समस्याएं' : 'Reported Issues'} fill="#0f5257" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="projects" name={language === 'hi' ? 'सक्रिय परियोजना' : 'Active Projects'} fill="#10b981" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3">
+          <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <h3 className="font-bold text-sm text-slate-900">
+              {language === 'hi' ? 'क्षेत्रवार वितरण' : 'Problem Domain Split'}
+            </h3>
+            <Radio className="w-4 h-4 text-slate-400" />
+          </div>
+
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={categoryChartData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={44}
+                  outerRadius={72}
+                  paddingAngle={2}
+                  stroke="none"
+                >
+                  {categoryChartData.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ fontSize: 11, borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 8px 24px rgba(15,23,42,0.08)' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="space-y-1.5 pt-1">
+            {categoryChartData.map(cat => (
+              <div key={cat.name} className="flex items-center justify-between text-[11px] font-medium text-slate-600">
+                <span className="flex items-center gap-2 min-w-0">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
+                  <span className="truncate">{cat.name}</span>
+                </span>
+                <span className="font-mono font-bold text-slate-800">{cat.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Corporate / CSR Partner Bulk Onboarding */}
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 className="font-bold text-sm text-slate-900 flex items-center space-x-2">
+              <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+              <span>{language === 'hi' ? `सीएसआर भागीदार पंजीकरण (${csrPartners.length})` : `Corporate CSR Partner Registry (${csrPartners.length})`}</span>
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {language === 'hi'
+                ? 'उद्योग सीएसआर भागीदारों को थोक सीएसआर CSV के माध्यम से जोड़ें।'
+                : 'Bulk-onboard industry CSR partners with their pledged thematic budgets via CSV.'}
+            </p>
+          </div>
+
+          <button
+            onClick={() => setShowUploader(!showUploader)}
+            className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-xl shadow transition flex items-center space-x-1.5 self-start sm:self-auto"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>{showUploader ? (language === 'hi' ? 'अपलोडर छिपाएं' : 'Hide Uploader') : (language === 'hi' ? 'सीएसआर भागीदार अपलोड करें' : 'Bulk Upload Partner CSV')}</span>
+          </button>
+        </div>
+
+        {showUploader && (
+          <CsvUploader
+            type="partner"
+            onUploadSuccess={bulkUploadPartners}
+            onClose={() => setShowUploader(false)}
+          />
+        )}
+
+        {csrPartners.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {csrPartners.map(p => (
+              <div key={p.id} className="border border-slate-200 rounded-2xl p-4 bg-slate-50/60 text-xs space-y-1.5">
+                <div className="font-bold text-slate-900 truncate">{p.orgName}</div>
+                <div className="font-mono text-[10px] text-slate-500 truncate">{p.cinNumber}</div>
+                <div className="flex items-center justify-between gap-2 pt-1">
+                  <span className="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full text-[10px] truncate">{p.thematicFocus}</span>
+                  <span className="font-mono font-black text-slate-800 shrink-0">₹{(p.annualBudget / 100000).toFixed(1)} L</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

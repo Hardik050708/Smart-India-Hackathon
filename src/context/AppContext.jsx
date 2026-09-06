@@ -8,6 +8,42 @@ import { routeChallengeToHei } from '../utils/heiRouting';
 
 const AppContext = createContext();
 
+/**
+ * Safe localStorage access.
+ * Reads are guarded: corrupt or legacy JSON must never white-screen the portal.
+ * Writes are guarded: private-mode / quota-limited browsers throw on setItem.
+ */
+const readStoredArray = (key, fallback) => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const readStoredObject = (key, fallback) => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const writeStored = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* storage unavailable - session continues in memory */
+  }
+};
+
+
 export const ROLES = {
   CITIZEN: { id: 'CITIZEN', title: 'Grassroots Citizen', icon: 'User', badge: 'bg-emerald-100 text-emerald-800' },
   LOCAL_BODY: { id: 'LOCAL_BODY', title: 'Local Body / Panchayat', icon: 'ShieldCheck', badge: 'bg-blue-100 text-blue-800' },
@@ -22,18 +58,16 @@ export const AppProvider = ({ children }) => {
   // Bilingual Language State ('en' or 'hi')
   const [language, setLanguage] = useState(() => {
     try {
-      return localStorage.getItem('sih_portal_lang') || 'en';
+      const stored = localStorage.getItem('sih_portal_lang');
+      return stored === 'hi' || stored === 'en' ? stored : 'en';
     } catch {
       return 'en';
     }
   });
 
   const toggleLanguage = () => {
-    setLanguage(prev => {
-      const next = prev === 'en' ? 'hi' : 'en';
-      localStorage.setItem('sih_portal_lang', next);
-      return next;
-    });
+    // Persistence is handled by the language effect below (storage-safe)
+    setLanguage(prev => (prev === 'en' ? 'hi' : 'en'));
   };
 
   // Global search query
@@ -41,45 +75,36 @@ export const AppProvider = ({ children }) => {
 
   // Currently authenticated user profile
   const [currentUser, setCurrentUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem('sih_portal_user');
-      return saved ? JSON.parse(saved) : (MOCK_USERS && MOCK_USERS[0] ? MOCK_USERS[0] : null);
-    } catch {
-      return MOCK_USERS && MOCK_USERS[0] ? MOCK_USERS[0] : null;
-    }
+    const stored = readStoredObject('sih_portal_user', null);
+    // A stale profile without a role would strand the portal on an unknown view
+    if (stored && stored.roleId) return stored;
+    return MOCK_USERS && MOCK_USERS[0] ? MOCK_USERS[0] : null;
   });
 
   const [currentRole, setCurrentRole] = useState(() => {
     try {
-      return localStorage.getItem('sih_portal_role') || 'CITIZEN';
+      const stored = localStorage.getItem('sih_portal_role');
+      return stored && ROLES[stored] ? stored : 'CITIZEN';
     } catch {
       return 'CITIZEN';
     }
   });
 
-  const [challenges, setChallenges] = useState(() => {
-    try {
-      const saved = localStorage.getItem('sih_portal_challenges_v3');
-      return saved ? JSON.parse(saved) : INITIAL_CHALLENGES;
-    } catch {
-      return INITIAL_CHALLENGES;
-    }
-  });
+  const [challenges, setChallenges] = useState(() =>
+    readStoredArray('sih_portal_challenges_v3', INITIAL_CHALLENGES)
+  );
 
-  const [proposals, setProposals] = useState(() => {
-    const saved = localStorage.getItem('sih_portal_proposals');
-    return saved ? JSON.parse(saved) : INITIAL_PROPOSALS;
-  });
+  const [proposals, setProposals] = useState(() =>
+    readStoredArray('sih_portal_proposals', INITIAL_PROPOSALS)
+  );
 
-  const [nepCredits, setNepCredits] = useState(() => {
-    const saved = localStorage.getItem('sih_portal_nep_credits');
-    return saved ? JSON.parse(saved) : INITIAL_NEP_CREDITS;
-  });
+  const [nepCredits, setNepCredits] = useState(() =>
+    readStoredArray('sih_portal_nep_credits', INITIAL_NEP_CREDITS)
+  );
 
-  const [csrPartners, setCsrPartners] = useState(() => {
-    const saved = localStorage.getItem('sih_portal_csr_partners');
-    return saved ? JSON.parse(saved) : INITIAL_CSR_PARTNERS;
-  });
+  const [csrPartners, setCsrPartners] = useState(() =>
+    readStoredArray('sih_portal_csr_partners', INITIAL_CSR_PARTNERS)
+  );
 
   const [facultyRoster, setFacultyRoster] = useState([
     { id: 'f1', name: 'Dr. Alok Kumar', email: 'alok.kumar@bitmesra.ac.in', dept: 'Environmental Engineering', designation: 'Professor', maxCapacity: 5 },
@@ -89,31 +114,31 @@ export const AppProvider = ({ children }) => {
 
   // Sync state to LocalStorage
   useEffect(() => {
-    localStorage.setItem('sih_portal_lang', language);
+    writeStored('sih_portal_lang', language);
   }, [language]);
 
   useEffect(() => {
-    localStorage.setItem('sih_portal_user', JSON.stringify(currentUser));
+    writeStored('sih_portal_user', JSON.stringify(currentUser));
   }, [currentUser]);
 
   useEffect(() => {
-    localStorage.setItem('sih_portal_role', currentRole);
+    writeStored('sih_portal_role', currentRole);
   }, [currentRole]);
 
   useEffect(() => {
-    localStorage.setItem('sih_portal_challenges_v3', JSON.stringify(challenges));
+    writeStored('sih_portal_challenges_v3', JSON.stringify(challenges));
   }, [challenges]);
 
   useEffect(() => {
-    localStorage.setItem('sih_portal_proposals', JSON.stringify(proposals));
+    writeStored('sih_portal_proposals', JSON.stringify(proposals));
   }, [proposals]);
 
   useEffect(() => {
-    localStorage.setItem('sih_portal_nep_credits', JSON.stringify(nepCredits));
+    writeStored('sih_portal_nep_credits', JSON.stringify(nepCredits));
   }, [nepCredits]);
 
   useEffect(() => {
-    localStorage.setItem('sih_portal_csr_partners', JSON.stringify(csrPartners));
+    writeStored('sih_portal_csr_partners', JSON.stringify(csrPartners));
   }, [csrPartners]);
 
   // Login handler
@@ -334,7 +359,11 @@ export const AppProvider = ({ children }) => {
   };
 
   const resetToDefaultData = () => {
-    localStorage.clear();
+    try {
+      localStorage.clear();
+    } catch {
+      /* ignore: state below still re-seeds the in-memory dataset */
+    }
     setChallenges(INITIAL_CHALLENGES);
     setProposals(INITIAL_PROPOSALS);
     setNepCredits(INITIAL_NEP_CREDITS);

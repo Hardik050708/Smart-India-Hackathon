@@ -84,7 +84,7 @@ export const calculateAiSeverity = ({ title = '', description = '', category = '
     urgencyScore,
     populationScore,
     duplicateScore,
-    matchedKeywords,
+    matchedKeywords: [...matchedEn, ...matchedHi],
     isEmergency,
     breakdown: {
       hazardContribution: Math.round(0.40 * hazardScore),
