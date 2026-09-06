@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import { JHARKHAND_DISTRICTS } from '../../data/jharkhandDistricts';
 
 // Fix Leaflet marker icon paths for web bundlers safely
 if (typeof window !== 'undefined' && L && L.Icon && L.Icon.Default && L.Icon.Default.prototype) {
@@ -112,13 +113,43 @@ function LocationPickerMarker({
   ) : null;
 }
 
-function MapRecenter({ center }: { center: [number, number] }) {
+/**
+ * Follows the selected GPS anchor only on meaningful moves (e.g. a district change).
+ * A click-to-pick inside the visible viewport must NOT snap the zoom level back out,
+ * otherwise users lose their position while anchoring a report pin.
+ */
+function MapFollowSelection({ center, minMoveKm = 5 }: { center: [number, number]; minMoveKm?: number }) {
   const map = useMap();
+  const lastCenter = useRef<L.LatLng>(map.getCenter());
+
   useEffect(() => {
-    if (center && center[0] && center[1]) {
-      map.flyTo(center, 9, { duration: 1.2 });
+    if (!center || !center[0] || !center[1]) return;
+    const next = L.latLng(center[0], center[1]);
+    const movedKm = lastCenter.current.distanceTo(next);
+    lastCenter.current = next;
+    if (movedKm < minMoveKm) return;
+    map.flyTo(next, Math.max(map.getZoom(), 11), { duration: 1.1 });
+  }, [center[0], center[1], map]);
+
+  return null;
+}
+
+/** Frames every plotted challenge so district reports outside Ranchi stay visible. */
+function FitPointsInViewport({ points, active }: { points: [number, number][]; active: boolean }) {
+  const map = useMap();
+  const signature = points.map(p => `${p[0].toFixed(3)},${p[1].toFixed(3)}`).join('|');
+
+  useEffect(() => {
+    if (!active || points.length === 0) return;
+    if (points.length === 1) {
+      map.flyTo(points[0], Math.max(map.getZoom(), 11), { duration: 1 });
+      return;
     }
-  }, [center, map]);
+    const bounds = L.latLngBounds(points.map(p => L.latLng(p[0], p[1])));
+    map.flyToBounds(bounds.pad(0.2), { duration: 1.1 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signature, active, map]);
+
   return null;
 }
 
@@ -135,10 +166,32 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     selectedPosition.lat,
     selectedPosition.lng
   ]);
+  const [tilesDown, setTilesDown] = useState(false);
 
   useEffect(() => {
     setCenterPosition([selectedPosition.lat, selectedPosition.lng]);
   }, [selectedPosition.lat, selectedPosition.lng]);
+
+  const isSpatialView = mode === 'viewer' || mode === 'heatmap';
+
+  // Plotted points (lat / lng|lon tolerated) for viewport fitting
+  const plottedPoints = useMemo<[number, number][]>(() => {
+    if (!isSpatialView) return [];
+    return challenges
+      .map((item) => {
+        const lat = Number(item.lat);
+        const lon = Number(item.lng ?? item.lon);
+        return Number.isFinite(lat) && Number.isFinite(lon) ? ([lat, lon] as [number, number]) : null;
+      })
+      .filter(Boolean) as [number, number][];
+  }, [challenges, isSpatialView]);
+
+  // District selector focus for filtered / empty results
+  const districtFocus = useMemo<[number, number] | null>(() => {
+    if (!activeDistrict || activeDistrict === 'ALL') return null;
+    const match = JHARKHAND_DISTRICTS.find(d => d.name === activeDistrict);
+    return match ? [match.lat, match.lng] : null;
+  }, [activeDistrict]);
 
   return (
     <div style={{ height }} className="w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 relative z-10 bg-slate-100">
@@ -151,9 +204,16 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &bull; Govt of Jharkhand GIS'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          eventHandlers={{ tileerror: () => setTilesDown(true), load: () => setTilesDown(false) }}
         />
 
-        <MapRecenter center={centerPosition} />
+        {isSpatialView && (
+          plottedPoints.length > 0
+            ? <FitPointsInViewport points={plottedPoints} active />
+            : <MapFollowSelection center={districtFocus || [23.3441, 85.3096]} minMoveKm={0} />
+        )}
+
+        {!isSpatialView && <MapFollowSelection center={centerPosition} />}
 
         {mode === 'picker' && (
           <LocationPickerMarker
@@ -166,7 +226,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         {(mode === 'viewer' || mode === 'heatmap') && challenges.map((item) => {
           const lat = item.lat;
           const lon = item.lng ?? item.lon ?? 85.3096;
-          const isEmergency = Boolean(item.isEmergency ?? item.is_emergency ?? (item.priorityScore && item.priorityScore > 85));
+          const isEmergency = Boolean(item.isEmergency ?? item.is_emergency ?? (item.priorityScore !== undefined && item.priorityScore >= 85));
           const score = item.priorityScore ?? item.priority_score ?? 50;
 
           return (
@@ -202,6 +262,20 @@ export const MapComponent: React.FC<MapComponentProps> = ({
                 </Popup>
               </Marker>
 
+              {/* Density halo: every report contributes to the district heatmap */}
+              {mode === 'heatmap' && show5kmRadius && !isEmergency && (
+                <Circle
+                  center={[lat, lon]}
+                  radius={5000}
+                  pathOptions={{
+                    color: '#f59e0b',
+                    weight: 1,
+                    fillColor: score >= 70 ? '#f97316' : '#10b981',
+                    fillOpacity: 0.14
+                  }}
+                />
+              )}
+
               {/* 5km Radius Circle overlay for emergencies */}
               {isEmergency && show5kmRadius && (
                 <Circle
@@ -221,11 +295,18 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         })}
       </MapContainer>
 
+      {tilesDown && (
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1000] bg-amber-50/95 border border-amber-300 text-amber-900 text-[11px] font-semibold px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+          Basemap tiles unreachable &mdash; pins &amp; 5km radii are still plotted accurately.
+        </div>
+      )}
+
       {/* Floating Map Legend (Linear.app aesthetic) */}
       <div className="absolute bottom-3 right-3 z-[1000] bg-white/90 backdrop-blur-md px-3 py-2 rounded-xl shadow-lg border border-slate-200/80 text-[11px] font-medium text-slate-700 space-y-1.5 pointer-events-auto">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm"></span>
-          <span>Critical Hazard (Score &gt; 85)</span>
+          <span>Critical Hazard (Score &ge; 85)</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm"></span>

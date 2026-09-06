@@ -2,6 +2,7 @@ import React from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/common/Navbar';
 import { RoleSwitcher } from './components/common/RoleSwitcher';
+import { ViewErrorBoundary } from './components/common/ErrorBoundary';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // 7 Role Views
@@ -14,7 +15,7 @@ import { IndustryCsrView } from './components/views/IndustryCsrView';
 import { GovAdminView } from './components/views/GovAdminView';
 
 const MainContent = () => {
-  const { currentRole } = useApp();
+  const { currentRole, language } = useApp();
 
   const renderActiveView = () => {
     switch (currentRole) {
@@ -47,7 +48,9 @@ const MainContent = () => {
           exit={{ opacity: 0, y: -15 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
         >
-          {renderActiveView()}
+          <ViewErrorBoundary resetKey={`${currentRole}-${language}`}>
+            {renderActiveView()}
+          </ViewErrorBoundary>
         </motion.div>
       </AnimatePresence>
     </main>
@@ -59,6 +62,7 @@ export default function App() {
     <AppProvider>
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans antialiased text-slate-900 selection:bg-teal-600 selection:text-white">
         <Navbar />
+        <RoleSwitcher />
         <MainContent />
         <footer className="mt-auto bg-slate-950 text-slate-400 border-t border-slate-900 py-8 text-center text-xs">
           <div className="max-w-7xl mx-auto px-4 space-y-2">

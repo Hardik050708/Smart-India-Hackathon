@@ -89,6 +89,16 @@ export const Navbar = () => {
                 <span className="font-bold tracking-wide">{t.languageToggle}</span>
               </button>
 
+              {/* AI Severity Formula Simulator Trigger */}
+              <button
+                onClick={() => setShowAiModal(true)}
+                className="hidden sm:flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-bold text-white transition shadow-sm hover:border-emerald-500/60"
+                title="AI Severity Formula & Triage Engine"
+              >
+                <Cpu className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span className="font-bold tracking-wide hidden md:inline">{t.aiFormula}</span>
+              </button>
+
               {/* User Profile / Role Trigger */}
               <button
                 onClick={() => setShowLoginModal(true)}

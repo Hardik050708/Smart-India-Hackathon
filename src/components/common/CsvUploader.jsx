@@ -1,11 +1,33 @@
 import React, { useState } from 'react';
 import { Upload, FileSpreadsheet, Check, AlertCircle } from 'lucide-react';
 
+const CSV_PRESETS = {
+  faculty: {
+    title: "Faculty / PI Bulk Roster Onboarding",
+    sampleHeaders: ["Full Name", "Institutional Email", "Department", "Designation", "Capacity"]
+  },
+  partner: {
+    title: "CSR / Industry Partner Bulk Onboarding",
+    sampleHeaders: ["Organization Name", "CIN Number", "Thematic Focus", "Budget", "Email"]
+  }
+};
+
 export const CsvUploader = ({
-  title = "Bulk CSV Onboarding Uploader",
-  sampleHeaders = ["Full Name", "Institutional Email", "Department", "Designation", "Capacity"],
-  onImport = () => {}
+  type = "faculty",
+  title,
+  sampleHeaders,
+  onImport = null,
+  onUploadSuccess = null,
+  onClose = () => {}
 }) => {
+  const preset = CSV_PRESETS[type] || CSV_PRESETS.faculty;
+  const resolvedTitle = title || preset.title;
+  const resolvedHeaders = sampleHeaders || preset.sampleHeaders;
+
+  // Backwards/forwards compatible: callers may wire either `onImport` or `onUploadSuccess`.
+  const ingest = onUploadSuccess || onImport;
+  const canIngest = typeof ingest === "function";
+
   const [fileData, setFileData] = useState(null);
   const [fileName, setFileName] = useState("");
   const [parseError, setParseError] = useState(null);
@@ -47,24 +69,42 @@ export const CsvUploader = ({
   };
 
   const handleSampleLoad = () => {
-    setFileName("sample_faculty_roster.csv");
+    setFileName(`sample_${type}_roster.csv`);
     setParseError(null);
     setSuccessMsg("");
 
-    const sampleRows = [
-      { "Full Name": "Dr. Sunita Murmu", "Institutional Email": "sunita.m@bitmesra.ac.in", "Department": "Civil Engineering", "Designation": "Professor", "Capacity": "5" },
-      { "Full Name": "Dr. Rajesh K. Sharma", "Institutional Email": "rk.sharma@iitism.ac.in", "Department": "Environmental Science", "Designation": "Associate Professor", "Capacity": "4" },
-      { "Full Name": "Dr. Vikas Oraon", "Institutional Email": "v.oraon@nitjsr.ac.in", "Department": "Metallurgical Engg", "Designation": "Assistant Professor", "Capacity": "3" }
-    ];
+    const sampleRows = type === "partner"
+      ? [
+          { "Organization Name": "Tata Steel Foundation", "CIN Number": "U27100JH1907GOI000868", "Thematic Focus": "Water & Sanitation", "Budget": "25000000", "Email": "csr@tatosteelfoundation.org" },
+          { "Organization Name": "Jindal Steel & Power Foundation", "CIN Number": "U27102TG1986GOI000893", "Thematic Focus": "Rural Infrastructure", "Budget": "12000000", "Email": "grants@jspl.foundation" },
+          { "Organization Name": "HCL Technologies Foundation", "CIN Number": "L72200UP1999PLC024210", "Thematic Focus": "Digital Governance", "Budget": "8000000", "Email": "csr@hcl.com" }
+        ]
+      : [
+          { "Full Name": "Dr. Sunita Murmu", "Institutional Email": "sunita.m@bitmesra.ac.in", "Department": "Civil Engineering", "Designation": "Professor", "Capacity": "5" },
+          { "Full Name": "Dr. Rajesh K. Sharma", "Institutional Email": "rk.sharma@iitism.ac.in", "Department": "Environmental Science", "Designation": "Associate Professor", "Capacity": "4" },
+          { "Full Name": "Dr. Vikas Oraon", "Institutional Email": "v.oraon@nitjsr.ac.in", "Department": "Metallurgical Engg", "Designation": "Assistant Professor", "Capacity": "3" }
+        ];
 
-    setFileData({ headers: sampleHeaders, rows: sampleRows });
+    setFileData({ headers: resolvedHeaders, rows: sampleRows });
   };
 
   const handleConfirmImport = () => {
     if (!fileData || fileData.rows.length === 0) return;
-    onImport(fileData.rows);
-    setSuccessMsg(`Successfully imported ${fileData.rows.length} record(s) into system roster!`);
-    setFileData(null);
+
+    if (!canIngest) {
+      setParseError("No import destination is wired to this uploader, so records cannot be ingested.");
+      return;
+    }
+
+    try {
+      ingest(fileData.rows);
+      setSuccessMsg(`Successfully imported ${fileData.rows.length} record(s) into system roster!`);
+      setFileData(null);
+      setFileName("");
+      setTimeout(() => onClose(), 900);
+    } catch (err) {
+      setParseError(err?.message || "Import failed. Please verify the CSV columns.");
+    }
   };
 
   return (
@@ -73,17 +113,25 @@ export const CsvUploader = ({
         <div>
           <h3 className="font-bold text-sm text-slate-900 flex items-center space-x-2">
             <FileSpreadsheet className="w-4 h-4 text-teal-600" />
-            <span>{title}</span>
+            <span>{resolvedTitle}</span>
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">Supports CSV / Excel exports with header matching</p>
         </div>
 
-        <button
-          onClick={handleSampleLoad}
-          className="text-xs text-teal-700 hover:text-teal-900 font-semibold underline"
-        >
-          Load Sample Data
-        </button>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={handleSampleLoad}
+            className="text-xs text-teal-700 hover:text-teal-900 font-semibold underline"
+          >
+            Load Sample Data
+          </button>
+          <button
+            onClick={onClose}
+            className="text-xs text-slate-400 hover:text-slate-700 font-semibold"
+          >
+            Close
+          </button>
+        </div>
       </div>
 
       {/* File Upload Box */}
@@ -98,7 +146,7 @@ export const CsvUploader = ({
         <p className="text-xs font-semibold text-slate-700">
           {fileName ? `Loaded: ${fileName}` : "Click or drag & drop .CSV file to ingest bulk roster"}
         </p>
-        <p className="text-[11px] text-slate-400 mt-1">Expected columns: {sampleHeaders.join(", ")}</p>
+        <p className="text-[11px] text-slate-400 mt-1">Expected columns: {resolvedHeaders.join(", ")}</p>
       </div>
 
       {parseError && (
