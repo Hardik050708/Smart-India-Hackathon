@@ -299,52 +299,6 @@ export const CitizenView = () => {
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900"
                   />
                 </div>
-
-                {/* Live AI Severity Triage Preview */}
-                <div className={`rounded-2xl border p-3.5 text-xs space-y-2 ${
-                  liveAi.isEmergency ? 'bg-rose-50 border-rose-200' : 'bg-slate-50 border-slate-200'
-                }`}>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-1.5 font-bold text-slate-700">
-                      <Cpu className={`w-3.5 h-3.5 ${liveAi.isEmergency ? 'text-rose-600' : 'text-emerald-600'}`} />
-                      {language === 'hi' ? 'AI गंभीरता पूर्वावलोकन' : 'Live AI Severity Preview'}
-                    </span>
-                    <span className={`font-mono font-black ${liveAi.isEmergency ? 'text-rose-700' : 'text-slate-900'}`}>
-                      {liveAi.priorityScore}<span className="text-[10px] text-slate-400">/100</span>
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-slate-500 font-medium">
-                      {language === 'hi' ? 'तात्कालिकता स्तर' : 'Urgency tier'}:{' '}
-                      <strong className={liveAi.isEmergency ? 'text-rose-700' : 'text-slate-800'}>{liveAi.urgencyTier}</strong>
-                    </span>
-                    <span className="font-mono text-[10px] text-slate-500">
-                      H {liveAi.hazardScore} &bull; U {liveAi.urgencyScore} &bull; P {liveAi.populationScore}
-                    </span>
-                  </div>
-
-                  {liveAi.matchedKeywords.length > 0 && (
-                    <div className="flex flex-wrap gap-1 pt-0.5">
-                      {liveAi.matchedKeywords.slice(0, 6).map((kw, i) => (
-                        <span key={`${kw}-${i}`} className="bg-rose-100 text-rose-800 border border-rose-200 font-mono text-[10px] px-1.5 py-0.5 rounded">
-                          {kw}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {liveAi.isEmergency && (
-                    <p className="text-[11px] font-bold text-rose-700 flex items-start gap-1.5 pt-0.5">
-                      <ShieldAlert className="w-3.5 h-3.5 shrink-0 mt-px" />
-                      <span>
-                        {language === 'hi'
-                          ? 'यह रिपोर्ट 85 से अधिक प्राथमिकता स्कोर पर आपातकालीन श्रेणी में जाएगी।'
-                          : 'This report will be dispatched as an emergency alert (priority score >= 85).'}
-                      </span>
-                    </p>
-                  )}
-                </div>
               </div>
             )}
 
