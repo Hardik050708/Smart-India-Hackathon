@@ -25,7 +25,8 @@ export const calculateAiSeverity = ({ title = '', description = '', category = '
   let hazardScore = 20; // baseline
   const matchedEn = CRITICAL_HAZARD_KEYWORDS_EN.filter(kw => fullText.includes(kw));
   const matchedHi = CRITICAL_HAZARD_KEYWORDS_HI.filter(kw => fullText.includes(kw));
-  const totalMatches = matchedEn.length + matchedHi.length;
+  const matchedKeywords = [...matchedEn, ...matchedHi];
+  const totalMatches = matchedKeywords.length;
 
   if (totalMatches > 0) {
     hazardScore = Math.min(100, 50 + totalMatches * 20);
@@ -84,7 +85,7 @@ export const calculateAiSeverity = ({ title = '', description = '', category = '
     urgencyScore,
     populationScore,
     duplicateScore,
-    matchedKeywords: [...matchedEn, ...matchedHi],
+    matchedKeywords,
     isEmergency,
     breakdown: {
       hazardContribution: Math.round(0.40 * hazardScore),
