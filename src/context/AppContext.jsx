@@ -147,6 +147,17 @@ export const AppProvider = ({ children }) => {
     setCurrentRole(userProfile.roleId);
   };
 
+  const logoutUser = () => {
+    setCurrentUser(null);
+    setCurrentRole('CITIZEN');
+    try {
+      localStorage.removeItem('sih_portal_user');
+      localStorage.removeItem('sih_token');
+    } catch {
+      /* storage unavailable */
+    }
+  };
+
   const switchRole = (roleId) => {
     setCurrentRole(roleId);
     const matchedUser = MOCK_USERS.find(u => u.roleId === roleId);
@@ -383,6 +394,7 @@ export const AppProvider = ({ children }) => {
       currentRole,
       setCurrentRole: switchRole,
       loginUser,
+      logoutUser,
       challenges,
       proposals,
       nepCredits,

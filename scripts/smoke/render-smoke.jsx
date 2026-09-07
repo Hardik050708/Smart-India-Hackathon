@@ -202,8 +202,9 @@ record(
   'role switcher bar is mounted in the app shell',
   'all 7 RBAC roles selectable'
 );
-record(appHtml.includes('Local Body / Panchayat') && appHtml.includes('Student Researcher'),
-  'App renders the RBAC switcher (was imported but never mounted)');
+const loginModalHtml = renderToString(React.createElement(AppProvider, null, React.createElement(LoginModal, { isOpen: true, onClose() {} })));
+record(loginModalHtml.includes('Local Body / Panchayat') && loginModalHtml.includes('Student Researcher'),
+  'Login modal provides RBAC role authentication for all stakeholders');
 
 store['sih_portal_role'] = 'LOCAL_BODY';
 const lb = renderToString(React.createElement(AppProvider, null, React.createElement(LocalBodyView)));

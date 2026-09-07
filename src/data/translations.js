@@ -19,6 +19,9 @@ export const TRANSLATIONS = {
     aiFormula: "AI Formula",
     aiFormulaModalTitle: "AI Severity Formula & Triage Engine",
     viewOnMobile: "Mobile & Tablet Ready",
+    login: "Log In",
+    logout: "Log Out",
+    switchAccount: "Switch Role",
 
     // Roles
     roles: {
@@ -146,6 +149,9 @@ export const TRANSLATIONS = {
     aiFormula: "AI सूत्र",
     aiFormulaModalTitle: "AI गंभीरता सूत्र एवं ट्राइएज इंजन",
     viewOnMobile: "मोबाइल एवं टैबलेट अनुकूलित",
+    login: "लॉग इन",
+    logout: "लॉग आउट",
+    switchAccount: "भूमिका बदलें",
 
     // Roles
     roles: {

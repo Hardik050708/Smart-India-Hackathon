@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useApp, ROLES } from '../../context/AppContext';
-import { MOCK_USERS } from '../../data/mockUsers';
 import { LoginModal } from '../auth/LoginModal';
 import { AiFormulaModal } from './AiFormulaModal';
 import {
-  Landmark, RefreshCw, Search, Languages, LogIn, UserCheck,
-  Cpu, Sparkles, X, Globe2, ChevronDown, Zap
+  Landmark, RefreshCw, Search, Languages, LogIn, LogOut, UserCheck,
+  Cpu, Sparkles, X, Globe2
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -13,6 +12,7 @@ export const Navbar = () => {
     currentUser,
     currentRole,
     loginUser,
+    logoutUser,
     resetToDefaultData,
     language,
     toggleLanguage,
@@ -24,19 +24,6 @@ export const Navbar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const [showPersonaMenu, setShowPersonaMenu] = useState(false);
-  const personaMenuRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (personaMenuRef.current && !personaMenuRef.current.contains(event.target)) {
-        setShowPersonaMenu(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   const roleConfig = ROLES[currentRole];
 
   return (
@@ -104,130 +91,52 @@ export const Navbar = () => {
                 <span className="font-bold tracking-wide">{t.languageToggle}</span>
               </button>
 
-              {/* 1-Click Demo Persona Switcher */}
-              <div className="relative" ref={personaMenuRef}>
-                <button
-                  onClick={() => setShowPersonaMenu(prev => !prev)}
-                  className="flex items-center space-x-1.5 bg-gradient-to-r from-emerald-500/15 to-teal-500/10 hover:from-emerald-500/25 hover:to-teal-500/20 border border-emerald-500/40 hover:border-emerald-400 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold text-emerald-300 hover:text-white transition shadow-sm"
-                  title="1-Click Demo Role Switcher"
-                >
-                  <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span className="hidden sm:inline text-slate-300 font-semibold text-[11px]">Demo:</span>
-                  <span className="font-bold text-white truncate max-w-[110px]">
-                    {t.roles[currentRole] || roleConfig?.title || 'Citizen'}
-                  </span>
-                  <ChevronDown className={`w-3.5 h-3.5 text-emerald-400 transition-transform duration-200 ${showPersonaMenu ? 'rotate-180' : ''}`} />
-                </button>
-
-                {/* Dropdown Menu - rendered in DOM with block/hidden for SSR smoke tests */}
-                <div
-                  className={`absolute right-0 mt-2 w-72 sm:w-80 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-2 z-50 transition-all ${
-                    showPersonaMenu ? 'block animate-in fade-in zoom-in-95' : 'hidden'
-                  }`}
-                >
-                  <div className="px-3 py-2 border-b border-slate-800 flex items-center justify-between">
-                    <div>
-                      <div className="text-xs font-black text-white flex items-center gap-1.5">
-                        <Zap className="w-3.5 h-3.5 text-amber-400" />
-                        <span>1-Click Demo Switch</span>
+              {/* Authentication: Log In / Log Out */}
+              {currentUser ? (
+                <div className="flex items-center space-x-1.5 sm:space-x-2">
+                  {/* User Profile Pill (Click to switch account/role) */}
+                  <button
+                    onClick={() => setShowLoginModal(true)}
+                    className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 p-1 sm:pr-3 rounded-2xl transition shadow-sm group"
+                    title={t.switchAccount || "Switch Account / Role"}
+                  >
+                    <img
+                      src={currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                      alt={currentUser.name}
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl object-cover ring-2 ring-emerald-500/40 shrink-0"
+                    />
+                    <div className="text-left hidden sm:block">
+                      <div className="text-xs font-bold text-white group-hover:text-emerald-400 transition flex items-center space-x-1">
+                        <span className="truncate max-w-[100px] md:max-w-[120px]">{currentUser.name}</span>
+                        <UserCheck className="w-3 h-3 text-emerald-400" />
                       </div>
-                      <p className="text-[10px] text-slate-400 font-medium">
-                        Instant persona change &bull; No password needed
-                      </p>
+                      <div className="text-[10px] text-emerald-400 font-semibold truncate max-w-[100px] md:max-w-[120px]">
+                        {t.roles[currentRole] || roleConfig?.title || 'Citizen'}
+                      </div>
                     </div>
-                    <button
-                      onClick={() => setShowPersonaMenu(false)}
-                      className="text-slate-400 hover:text-white text-xs font-bold p-1"
-                    >
-                      ✕
-                    </button>
-                  </div>
+                  </button>
 
-                  <div className="py-1 max-h-72 overflow-y-auto divide-y divide-slate-800/60">
-                    {MOCK_USERS.map((u) => {
-                      const isActive = currentRole === u.roleId;
-                      const roleLabel = t.roles[u.roleId] || u.title;
-                      return (
-                        <button
-                          key={u.roleId}
-                          onClick={() => {
-                            loginUser(u);
-                            setShowPersonaMenu(false);
-                          }}
-                          className={`w-full text-left p-2.5 rounded-xl transition flex items-center space-x-3 group ${
-                            isActive
-                              ? 'bg-emerald-500/15 border border-emerald-500/40 text-white'
-                              : 'hover:bg-slate-800/80 text-slate-200'
-                          }`}
-                        >
-                          <img
-                            src={u.avatar}
-                            alt={u.name}
-                            className="w-8 h-8 rounded-xl object-cover ring-1 ring-slate-700 group-hover:ring-emerald-400 shrink-0"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold truncate group-hover:text-emerald-300">
-                                {u.name}
-                              </span>
-                              {isActive && (
-                                <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950">
-                                  Active
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-[11px] font-medium text-emerald-400 truncate">
-                              {roleLabel}
-                            </div>
-                            <div className="text-[10px] text-slate-400 truncate">
-                              {u.dept}
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <div className="pt-2 border-t border-slate-800 px-1">
-                    <button
-                      onClick={() => {
-                        setShowPersonaMenu(false);
-                        setShowLoginModal(true);
-                      }}
-                      className="w-full text-center text-[11px] font-bold text-slate-400 hover:text-white py-1.5 rounded-lg hover:bg-slate-800 transition flex items-center justify-center gap-1"
-                    >
-                      <LogIn className="w-3 h-3 text-slate-400" />
-                      <span>Custom Password Login &rarr;</span>
-                    </button>
-                  </div>
+                  {/* Log Out Button */}
+                  <button
+                    onClick={logoutUser}
+                    className="flex items-center space-x-1.5 bg-slate-900 hover:bg-rose-950/60 border border-slate-700/80 hover:border-rose-500/50 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-rose-300 transition shadow-sm active:scale-95"
+                    title={t.logout}
+                  >
+                    <LogOut className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                    <span className="hidden sm:inline font-bold">{t.logout}</span>
+                  </button>
                 </div>
-              </div>
-
-              {/* User Profile / Role Trigger */}
-              <button
-                onClick={() => setShowPersonaMenu(prev => !prev)}
-                className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 p-1 sm:pr-3 rounded-2xl transition shadow-sm group"
-                title="View & Switch Demo Persona"
-              >
-                <img
-                  src={currentUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
-                  alt={currentUser?.name}
-                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl object-cover ring-2 ring-emerald-500/40 shrink-0"
-                />
-                <div className="text-left hidden lg:block">
-                  <div className="text-xs font-bold text-white group-hover:text-emerald-400 transition flex items-center space-x-1">
-                    <span className="truncate max-w-[100px]">{currentUser?.name || 'User'}</span>
-                    <UserCheck className="w-3 h-3 text-emerald-400" />
-                  </div>
-                  <div className="text-[10px] text-emerald-400 font-semibold truncate max-w-[100px]">
-                    {t.roles[currentRole] || roleConfig?.title || 'Citizen'}
-                  </div>
-                </div>
-
-                <div className="p-1 rounded-lg bg-slate-800 text-slate-300 group-hover:bg-emerald-500 group-hover:text-slate-950 transition">
-                  <LogIn className="w-3 h-3" />
-                </div>
-              </button>
+              ) : (
+                /* Guest: Log In Button */
+                <button
+                  onClick={() => setShowLoginModal(true)}
+                  className="flex items-center space-x-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3.5 sm:px-4 py-2 rounded-xl text-xs transition shadow-md shadow-emerald-500/20 active:scale-95"
+                  title={t.login}
+                >
+                  <LogIn className="w-3.5 h-3.5 shrink-0" />
+                  <span>{t.login}</span>
+                </button>
+              )}
             </div>
           </div>
 
